@@ -1,12 +1,13 @@
-using VoltCart.Api.Data;
 using Microsoft.EntityFrameworkCore;
+using VoltCart.Api.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
 var connectionString = builder.Configuration.GetConnectionString("Default");
 
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 0))));
+    options.UseMySql(connectionString, new MySqlServerVersion(new Version(8, 0, 0)))
+);
 
 builder.Services.AddOpenApi();
 
