@@ -10,35 +10,64 @@ public static class DbSeeder
         if (await db.Brands.AnyAsync())
             return;
 
-        var samsung = new Brand { Name = "Samsung", Slug = "samsung" };
-        var apple = new Brand { Name = "Apple", Slug = "apple" };
-        var sony = new Brand { Name = "Sony", Slug = "sony" };
-        var logitech = new Brand { Name = "Logitech", Slug = "logitech" };
+        var samsung = new Brand
+        {
+            Name = "Samsung",
+            Slug = "samsung",
+            IsActive = true,
+        };
+        var apple = new Brand
+        {
+            Name = "Apple",
+            Slug = "apple",
+            IsActive = true,
+        };
+        var sony = new Brand
+        {
+            Name = "Sony",
+            Slug = "sony",
+            IsActive = true,
+        };
+        var logitech = new Brand
+        {
+            Name = "Logitech",
+            Slug = "logitech",
+            IsActive = true,
+        };
 
-        var electronics = new Category { Name = "Electronics", Slug = "electronics" };
+        var electronics = new Category
+        {
+            Name = "Electronics",
+            Slug = "electronics",
+            IsActive = true,
+        };
         var phones = new Category
         {
             Name = "Phones",
             Slug = "phones",
             Parent = electronics,
+            IsActive = true,
         };
         var laptops = new Category
         {
             Name = "Laptops",
             Slug = "laptops",
             Parent = electronics,
+            IsActive = true,
         };
         var audio = new Category
         {
             Name = "Audio",
             Slug = "audio",
             Parent = electronics,
+            IsActive = true,
         };
         var accessories = new Category
         {
             Name = "Accessories",
             Slug = "accessories",
             Parent = electronics,
+            IsActive = true,
         };
 
         db.Brands.AddRange(samsung, apple, sony, logitech);
