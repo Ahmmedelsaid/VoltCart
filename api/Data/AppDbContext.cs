@@ -19,6 +19,10 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 
     public DbSet<CartItem> CartItems => Set<CartItem>();
 
+    public DbSet<Order> Orders => Set<Order>();
+
+    public DbSet<OrderItem> OrderItems => Set<OrderItem>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -55,6 +59,46 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
                 .WithMany()
                 .HasForeignKey(c => c.ProductId)
                 .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<Order>(entity =>
+        {
+            entity.Property(o => o.Status).HasConversion<string>().HasMaxLength(20);
+            entity.Property(o => o.ShippingName).HasMaxLength(100);
+            entity.Property(o => o.Phone).HasMaxLength(20);
+            entity.Property(o => o.Address).HasMaxLength(300);
+            entity.Property(o => o.City).HasMaxLength(100);
+            entity.Property(o => o.Notes).HasMaxLength(500);
+            entity.Property(o => o.Total).HasPrecision(18, 2);
+
+            // سجل الطلبات بيتعرض بالأحدث أولًا لكل عميل
+            entity.HasIndex(o => new { o.UserId, o.CreatedAt });
+
+            // الطلبات سجل مالي: مسح المستخدم ما يمسحهاش
+            entity
+                .HasOne(o => o.User)
+                .WithMany()
+                .HasForeignKey(o => o.UserId)
+                .OnDelete(DeleteBehavior.Restrict);
+        });
+
+        modelBuilder.Entity<OrderItem>(entity =>
+        {
+            entity.Property(i => i.ProductName).HasMaxLength(200);
+            entity.Property(i => i.ImageUrl).HasMaxLength(500);
+            entity.Property(i => i.UnitPrice).HasPrecision(18, 2);
+
+            entity
+                .HasOne(i => i.Order)
+                .WithMany(o => o.Items)
+                .HasForeignKey(i => i.OrderId)
+                .OnDelete(DeleteBehavior.Cascade);
+
+            entity
+                .HasOne(i => i.Product)
+                .WithMany()
+                .HasForeignKey(i => i.ProductId)
+                .OnDelete(DeleteBehavior.Restrict);
         });
 
         modelBuilder.Entity<User>(entity =>
