@@ -36,7 +36,13 @@ public class ProductsController(AppDbContext db) : ControllerBase
     )
     {
         if (query.MinPrice > query.MaxPrice)
-            return BadRequest("minPrice cannot be greater than maxPrice.");
+        {
+            ModelState.AddModelError(
+                nameof(query.MinPrice),
+                "MinPrice cannot be greater than MaxPrice."
+            );
+            return ValidationProblem(ModelState);
+        }
 
         // 1) الفلاتر: كل شرط بيتضاف بس لو العميل بعته
         var products = db.Products.Where(p => p.IsActive);

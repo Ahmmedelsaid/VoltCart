@@ -1,8 +1,13 @@
 using Microsoft.EntityFrameworkCore;
 using VoltCart.Api.Data;
+using VoltCart.Api.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
+
+// أي خطأ غير متوقع يرجع بنفس الشكل (ProblemDetails) بدل stack trace
+builder.Services.AddProblemDetails();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
 var connectionString = builder.Configuration.GetConnectionString("Default");
 
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -35,6 +40,12 @@ if (app.Environment.IsDevelopment())
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
     await DbSeeder.SeedAsync(db);
 }
+
+// لازم أول حاجة في الـ pipeline عشان يمسك أي exception بعده
+app.UseExceptionHandler();
+
+// بيحوّل الـ 404 و 405 و 415 الفاضية لـ ProblemDetails
+app.UseStatusCodePages();
 
 app.UseHttpsRedirection();
 
