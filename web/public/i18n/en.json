@@ -1,7 +1,14 @@
 {
-  "app": { "name": "VoltCart" },
-  "nav": { "products": "Products", "skip": "Skip to content" },
-  "lang": { "switchTo": "العربية" },
+  "app": {
+    "name": "VoltCart"
+  },
+  "nav": {
+    "products": "Products",
+    "skip": "Skip to content"
+  },
+  "lang": {
+    "switchTo": "العربية"
+  },
   "home": {
     "eyebrow": "Electronics store",
     "title": "Power up your setup",
@@ -147,5 +154,30 @@
     "title": "Page not found",
     "text": "The link you opened is wrong or has moved.",
     "home": "Back to home"
+  },
+  "cart": {
+    "title": "Shopping cart",
+    "add": "Add to cart",
+    "added": "Added to your cart",
+    "view": "View cart",
+    "remove": "Remove from cart",
+    "quantity": "Quantity",
+    "increase": "Increase quantity",
+    "decrease": "Decrease quantity",
+    "emptyTitle": "Your cart is empty",
+    "emptyText": "Add some products and they will show up here.",
+    "summary": "Order summary",
+    "items": "Items ({{count}})",
+    "subtotal": "Subtotal",
+    "checkout": "Checkout",
+    "checkoutSoon": "Checkout is coming soon.",
+    "continue": "Continue shopping",
+    "unavailable": "This product is unavailable. Remove it from your cart.",
+    "lowStock": "Only {{count}} left. Reduce the quantity.",
+    "fixUnavailable": "The subtotal excludes unavailable products.",
+    "errors": {
+      "stock": "That quantity is more than what we have in stock.",
+      "gone": "This product is no longer available."
+    }
   }
 }

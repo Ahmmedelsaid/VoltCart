@@ -8,10 +8,11 @@ import { Category } from './core/models/api.models';
 import { CatalogService } from './core/services/catalog.service';
 import { Header } from './layout/header';
 import { Icon } from './shared/ui/icon';
+import { Toasts } from './shared/ui/toasts';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, RouterLink, Header, TranslocoPipe, Icon],
+  imports: [RouterOutlet, RouterLink, Header, Toasts, TranslocoPipe, Icon],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <a
@@ -21,6 +22,7 @@ import { Icon } from './shared/ui/icon';
       {{ 'nav.skip' | transloco }}
     </a>
     <app-header />
+    <app-toasts />
     <main id="main" class="min-h-[70vh]">
       <router-outlet />
     </main>
