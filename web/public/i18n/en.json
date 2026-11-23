@@ -170,7 +170,6 @@
     "items": "Items ({{count}})",
     "subtotal": "Subtotal",
     "checkout": "Checkout",
-    "checkoutSoon": "Checkout is coming soon.",
     "continue": "Continue shopping",
     "unavailable": "This product is unavailable. Remove it from your cart.",
     "lowStock": "Only {{count}} left. Reduce the quantity.",
@@ -178,6 +177,60 @@
     "errors": {
       "stock": "That quantity is more than what we have in stock.",
       "gone": "This product is no longer available."
+    }
+  },
+  "checkout": {
+    "title": "Checkout",
+    "shipping": "Delivery details",
+    "fields": {
+      "name": "Full name",
+      "phone": "Phone number",
+      "address": "Address",
+      "city": "City",
+      "notes": "Notes for the courier"
+    },
+    "optional": "optional",
+    "payment": "Payment",
+    "cod": "Cash on delivery: you pay when the order arrives.",
+    "place": "Place order",
+    "placing": "Placing order…",
+    "backToCart": "Back to cart",
+    "shippingNote": "Delivery is arranged by phone after you place the order.",
+    "validation": {
+      "nameRequired": "Please enter the recipient's name.",
+      "nameShort": "The name must be at least 2 characters.",
+      "phoneRequired": "Please enter a phone number.",
+      "phoneInvalid": "Enter a valid phone number, like +20 100 123 4567.",
+      "addressRequired": "Please enter your address.",
+      "addressShort": "The address looks too short.",
+      "cityRequired": "Please enter your city.",
+      "cityShort": "The city name looks too short."
+    },
+    "errors": {
+      "invalid": "Some details are not valid. Please check the form.",
+      "stock": "Some items are no longer available in the quantity you chose."
+    }
+  },
+  "orders": {
+    "title": "My orders",
+    "number": "Order #{{id}}",
+    "all": "All orders",
+    "total": "Total",
+    "status": {
+      "Placed": "Placed",
+      "Cancelled": "Cancelled"
+    },
+    "placedTitle": "Thank you! Your order is placed.",
+    "placedText": "We will call you to confirm delivery. You pay when it arrives.",
+    "cancel": "Cancel order",
+    "cancelConfirm": "Cancel this order? The items go back to stock.",
+    "cancelYes": "Yes, cancel",
+    "cancelNo": "Keep order",
+    "cancelling": "Cancelling…",
+    "notFoundTitle": "Order not found",
+    "errors": {
+      "notFound": "This order does not exist.",
+      "cannotCancel": "This order can no longer be cancelled."
     }
   }
 }

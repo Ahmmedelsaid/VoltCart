@@ -50,6 +50,17 @@ export class CartService {
       .subscribe((cart) => this.state.set(cart));
   }
 
+  /** بيجيب السلة من الـ API تاني (بعد طلب اتعمل، أو لما المخزون يتغيّر). */
+  reload(): void {
+    if (!this.auth.isAuthenticated()) return;
+    this.http
+      .get<Cart>(this.baseUrl)
+      .pipe(catchError(() => of(null)))
+      .subscribe((cart) => {
+        if (cart) this.state.set(cart);
+      });
+  }
+
   add(productId: number, quantity = 1): Observable<Cart> {
     return this.http
       .post<Cart>(`${this.baseUrl}/items`, { productId, quantity })
