@@ -3,6 +3,64 @@
   "nav": { "products": "المنتجات", "skip": "تخطّي إلى المحتوى" },
   "lang": { "switchTo": "English" },
   "footer": { "rights": "© {{year}} VoltCart. جميع الحقوق محفوظة." },
+  "auth": {
+    "login": {
+      "title": "أهلًا بعودتك",
+      "subtitle": "سجّل الدخول إلى حسابك في VoltCart",
+      "cta": "تسجيل الدخول",
+      "submit": "تسجيل الدخول",
+      "submitting": "جارٍ تسجيل الدخول…",
+      "noAccount": "جديد في VoltCart؟",
+      "createAccount": "أنشئ حسابًا"
+    },
+    "register": {
+      "title": "أنشئ حسابك",
+      "subtitle": "انضم إلى VoltCart لحفظ بياناتك ومتابعة طلباتك",
+      "cta": "إنشاء حساب",
+      "submit": "إنشاء الحساب",
+      "submitting": "جارٍ إنشاء الحساب…",
+      "haveAccount": "لديك حساب بالفعل؟",
+      "signIn": "سجّل الدخول",
+      "passwordHint": "8 أحرف على الأقل، وتحتوي على حرف ورقم."
+    },
+    "fields": {
+      "fullName": "الاسم الكامل",
+      "email": "البريد الإلكتروني",
+      "password": "كلمة المرور",
+      "confirmPassword": "تأكيد كلمة المرور",
+      "showPassword": "إظهار كلمة المرور",
+      "hidePassword": "إخفاء كلمة المرور"
+    },
+    "validation": {
+      "nameRequired": "من فضلك اكتب اسمك.",
+      "nameShort": "يجب أن يتكون الاسم من حرفين على الأقل.",
+      "emailRequired": "من فضلك اكتب بريدك الإلكتروني.",
+      "emailInvalid": "اكتب بريدًا إلكترونيًا صحيحًا.",
+      "passwordRequired": "من فضلك اكتب كلمة المرور.",
+      "passwordShort": "استخدم 8 أحرف على الأقل.",
+      "passwordWeak": "أضف حرفًا واحدًا ورقمًا واحدًا على الأقل.",
+      "confirmRequired": "من فضلك أكّد كلمة المرور.",
+      "mismatch": "كلمتا المرور غير متطابقتين."
+    },
+    "errors": {
+      "invalidCredentials": "البريد الإلكتروني أو كلمة المرور غير صحيحة.",
+      "emailTaken": "يوجد حساب بهذا البريد الإلكتروني بالفعل.",
+      "tooManyAttempts": "محاولات كثيرة. انتظر دقيقة ثم حاول مرة أخرى.",
+      "invalidInput": "بعض البيانات غير صحيحة. راجع النموذج."
+    },
+    "logout": "تسجيل الخروج"
+  },
+  "account": {
+    "title": "حسابي",
+    "greeting": "أهلًا، {{name}}",
+    "profile": "بياناتي",
+    "name": "الاسم",
+    "email": "البريد الإلكتروني",
+    "orders": "طلباتي",
+    "noOrders": "ليس لديك طلبات بعد.",
+    "startShopping": "ابدأ التسوّق",
+    "signOut": "تسجيل الخروج"
+  },
   "products": {
     "title": "الإلكترونيات",
     "subtitle": "أحدث الموبايلات واللابتوبات والصوتيات والإكسسوارات",
