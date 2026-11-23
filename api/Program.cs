@@ -1,6 +1,8 @@
 using System.Text;
+using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -27,15 +29,45 @@ builder.Services.AddOpenApi();
 // لأن الـ origin مختلف. هنا بنسمح بالـ origins اللي في appsettings بس.
 var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? [];
 
-builder.Services.AddCors(options =>
-    options.AddPolicy("Frontend", policy =>
-        policy
+builder.Services.AddCors(options => options.AddPolicy("Frontend", policy => policy
             .WithOrigins(allowedOrigins)
             .AllowAnyHeader()
             .AllowAnyMethod()
-            .WithExposedHeaders("Location")
-    )
-);
+            // الـ refresh token في cookie، والمتصفح مش هيبعتها لموقع تاني إلا لو الـ API سمح.
+            // AllowCredentials لازم يتعامل مع origins محددة (مش *)، وده اللي عندنا.
+            .AllowCredentials()
+            .WithExposedHeaders("Location")));
+
+// ---------- Rate limiting ----------
+// بنحدّ محاولات تسجيل الدخول والتسجيل لكل IP، عشان ما حدّش يخمّن الباسوردات.
+// ملحوظة: خلف reverse proxy لازم نضبط ForwardedHeaders عشان الـ IP يبقى الحقيقي.
+var authPermitLimit = builder.Configuration.GetValue("RateLimit:AuthPermitLimit", 10);
+var authWindowSeconds = builder.Configuration.GetValue("RateLimit:AuthWindowSeconds", 60);
+
+builder.Services.AddRateLimiter(options =>
+{
+    options.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    options.OnRejected = (context, _) =>
+    {
+        if (context.Lease.TryGetMetadata(MetadataName.RetryAfter, out var retryAfter))
+            context.HttpContext.Response.Headers.RetryAfter = (
+                (int)retryAfter.TotalSeconds
+            ).ToString();
+
+        return ValueTask.CompletedTask;
+    };
+    options.AddPolicy("auth", httpContext =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+            _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = authPermitLimit,
+                Window = TimeSpan.FromSeconds(authWindowSeconds),
+                QueueLimit = 0,
+            }
+        )
+    );
+});
 
 // ---------- Auth (JWT) ----------
 // الإعدادات بتتقري وتتفحص عند التشغيل: لو Jwt:Key ناقص أو قصير، التطبيق مش بيشتغل
@@ -109,6 +141,8 @@ app.UseHttpsRedirection();
 
 // الترتيب مهم: CORS ثم Authentication (مين انت؟) ثم Authorization (مسموح لك؟)
 app.UseCors("Frontend");
+
+app.UseRateLimiter();
 
 app.UseAuthentication();
 app.UseAuthorization();
