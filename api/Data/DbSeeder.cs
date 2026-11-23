@@ -6,10 +6,10 @@ namespace VoltCart.Api.Data;
 public static class DbSeeder
 {
     /// <summary>
-    /// Demo product images live in the Angular app (web/public/images/products), so the
+    /// Demo product photos live in the Angular app (web/public/images/products), so the
     /// URL is relative to the site. In production, images should come from your own storage.
     /// </summary>
-    private static string Image(string slug) => $"/images/products/{slug}.svg";
+    private static string Image(string fileName) => $"/images/products/{fileName}";
 
     public static async Task SeedAsync(AppDbContext db)
     {
@@ -85,7 +85,7 @@ public static class DbSeeder
                 Name = "Samsung Galaxy S24",
                 Sku = "SAM-S24-128",
                 Slug = "samsung-galaxy-s24",
-                ImageUrl = Image("samsung-galaxy-s24"),
+                ImageUrl = Image("samsung-galaxy-s24.jpg"),
                 Description = "Flagship Android phone with a 6.2-inch AMOLED display.",
                 Price = 35000m,
                 StockQuantity = 20,
@@ -104,7 +104,7 @@ public static class DbSeeder
                 Name = "iPhone 15",
                 Sku = "APL-IP15-128",
                 Slug = "iphone-15",
-                ImageUrl = Image("iphone-15"),
+                ImageUrl = Image("iphone-15.webp"),
                 Description = "Apple iPhone 15 with the A16 Bionic chip.",
                 Price = 42000m,
                 StockQuantity = 15,
@@ -123,7 +123,7 @@ public static class DbSeeder
                 Name = "MacBook Air M2",
                 Sku = "APL-MBA-M2-256",
                 Slug = "macbook-air-m2",
-                ImageUrl = Image("macbook-air-m2"),
+                ImageUrl = Image("macbook-air-m2.webp"),
                 Description = "Thin and light laptop powered by the Apple M2 chip.",
                 Price = 58000m,
                 StockQuantity = 8,
@@ -142,7 +142,7 @@ public static class DbSeeder
                 Name = "Samsung Galaxy Book3",
                 Sku = "SAM-BOOK3-512",
                 Slug = "samsung-galaxy-book3",
-                ImageUrl = Image("samsung-galaxy-book3"),
+                ImageUrl = Image("samsung-galaxy-book3.jpg"),
                 Description = "Everyday laptop with a 15.6-inch Full HD display.",
                 Price = 29000m,
                 StockQuantity = 12,
@@ -161,7 +161,7 @@ public static class DbSeeder
                 Name = "Sony WH-1000XM5",
                 Sku = "SNY-WH1000XM5",
                 Slug = "sony-wh-1000xm5",
-                ImageUrl = Image("sony-wh-1000xm5"),
+                ImageUrl = Image("sony-wh-1000xm5.webp"),
                 Description =
                     "Wireless over-ear headphones with industry-leading noise cancelling.",
                 Price = 14500m,
@@ -181,7 +181,7 @@ public static class DbSeeder
                 Name = "Sony WF-1000XM5",
                 Sku = "SNY-WF1000XM5",
                 Slug = "sony-wf-1000xm5",
-                ImageUrl = Image("sony-wf-1000xm5"),
+                ImageUrl = Image("sony-wf-1000xm5.webp"),
                 Description = "True wireless earbuds with active noise cancelling.",
                 Price = 11000m,
                 StockQuantity = 30,
@@ -200,7 +200,7 @@ public static class DbSeeder
                 Name = "Logitech MX Master 3S",
                 Sku = "LOG-MXM3S",
                 Slug = "logitech-mx-master-3s",
-                ImageUrl = Image("logitech-mx-master-3s"),
+                ImageUrl = Image("logitech-mx-master-3s.jpg"),
                 Description = "Ergonomic wireless mouse for productivity.",
                 Price = 4200m,
                 StockQuantity = 40,
@@ -214,7 +214,6 @@ public static class DbSeeder
                 Name = "Logitech MX Keys",
                 Sku = "LOG-MXKEYS",
                 Slug = "logitech-mx-keys",
-                ImageUrl = Image("logitech-mx-keys"),
                 Description = "Illuminated wireless keyboard with smart backlighting.",
                 Price = 4800m,
                 StockQuantity = 0,
