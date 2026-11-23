@@ -6,6 +6,7 @@ export type IconName =
   | 'search'
   | 'chevron-left'
   | 'chevron-right'
+  | 'chevron-down'
   | 'filter'
   | 'x'
   | 'box'
@@ -53,6 +54,9 @@ export type IconName =
         }
         @case ('chevron-right') {
           <path d="m9 18 6-6-6-6" />
+        }
+        @case ('chevron-down') {
+          <path d="m6 9 6 6 6-6" />
         }
         @case ('filter') {
           <path d="M4 6h16M7 12h10M10 18h4" />
