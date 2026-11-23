@@ -8,9 +8,11 @@ import {
 } from '@angular/core';
 import { provideRouter, withComponentInputBinding } from '@angular/router';
 import { provideTransloco, TranslocoService } from '@jsverse/transloco';
-import { firstValueFrom } from 'rxjs';
+import { firstValueFrom, timeout } from 'rxjs';
 
 import { routes } from './app.routes';
+import { authInterceptor } from './core/auth/auth.interceptor';
+import { AuthService } from './core/auth/auth.service';
 import { LanguageService } from './core/i18n/language.service';
 import { TranslocoHttpLoader } from './core/i18n/transloco-loader';
 import { problemDetailsInterceptor } from './core/interceptors/problem-details.interceptor';
@@ -20,7 +22,8 @@ export const appConfig: ApplicationConfig = {
     provideBrowserGlobalErrorListeners(),
     // withComponentInputBinding: بارامترات الـ route (:id) بتوصل للـ component كـ input
     provideRouter(routes, withComponentInputBinding()),
-    provideHttpClient(withInterceptors([problemDetailsInterceptor])),
+    // الترتيب مهم: problemDetails برّه، فالأخطاء بتعدّي على auth (يجدّد الـ token لو لزم) الأول
+    provideHttpClient(withInterceptors([problemDetailsInterceptor, authInterceptor])),
     provideTransloco({
       config: {
         availableLangs: ['ar', 'en'],
@@ -38,5 +41,10 @@ export const appConfig: ApplicationConfig = {
       transloco.setActiveLang(lang);
       return firstValueFrom(transloco.load(lang));
     }),
+    // بنرجّع جلسة المستخدم (لو الـ cookie لسه صالحة) قبل أول تنقّل، عشان الـ guards تعرف حالته.
+    // لو السيرفر مش متاح بنكمّل كزائر بعد 4 ثواني.
+    provideAppInitializer(() =>
+      firstValueFrom(inject(AuthService).loadSession().pipe(timeout(4000))).catch(() => undefined),
+    ),
   ],
 };
