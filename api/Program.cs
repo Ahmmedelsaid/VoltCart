@@ -1,6 +1,13 @@
+using System.Text;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using VoltCart.Api.Data;
 using VoltCart.Api.Infrastructure;
+using VoltCart.Api.Models;
+using VoltCart.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers();
@@ -30,6 +37,46 @@ builder.Services.AddCors(options =>
     )
 );
 
+// ---------- Auth (JWT) ----------
+// الإعدادات بتتقري وتتفحص عند التشغيل: لو Jwt:Key ناقص أو قصير، التطبيق مش بيشتغل
+// ويقولك السبب (أحسن من إنه يشتغل بمفتاح ضعيف).
+builder
+    .Services.AddOptions<JwtOptions>()
+    .BindConfiguration(JwtOptions.SectionName)
+    .ValidateDataAnnotations()
+    .ValidateOnStart();
+
+builder.Services.AddSingleton(TimeProvider.System);
+builder.Services.AddSingleton<IPasswordHasher<User>, PasswordHasher<User>>();
+builder.Services.AddSingleton<TokenService>();
+
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer();
+builder
+    .Services.AddOptions<JwtBearerOptions>(JwtBearerDefaults.AuthenticationScheme)
+    .Configure<IOptions<JwtOptions>>(
+        (options, jwtOptions) =>
+        {
+            var jwt = jwtOptions.Value;
+
+            // بنقرا أسماء الـ claims زي ما هي في التوكن (sub, role, name) من غير تحويل
+            options.MapInboundClaims = false;
+            options.TokenValidationParameters = new TokenValidationParameters
+            {
+                ValidateIssuer = true,
+                ValidIssuer = jwt.Issuer,
+                ValidateAudience = true,
+                ValidAudience = jwt.Audience,
+                ValidateIssuerSigningKey = true,
+                IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwt.Key)),
+                ValidateLifetime = true,
+                ClockSkew = TimeSpan.FromSeconds(30),
+                NameClaimType = "name",
+                RoleClaimType = "role",
+            };
+        }
+    );
+builder.Services.AddAuthorization();
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -41,6 +88,17 @@ if (app.Environment.IsDevelopment())
     await DbSeeder.SeedAsync(db);
 }
 
+// أول Admin بيتعمل من الإعدادات (Seed:AdminEmail / Seed:AdminPassword) لو موجودة بس
+using (var scope = app.Services.CreateScope())
+{
+    await AdminSeeder.SeedAsync(
+        scope.ServiceProvider.GetRequiredService<AppDbContext>(),
+        scope.ServiceProvider.GetRequiredService<IPasswordHasher<User>>(),
+        app.Configuration,
+        app.Logger
+    );
+}
+
 // لازم أول حاجة في الـ pipeline عشان يمسك أي exception بعده
 app.UseExceptionHandler();
 
@@ -49,9 +107,10 @@ app.UseStatusCodePages();
 
 app.UseHttpsRedirection();
 
-// لازم يجي قبل UseAuthorization
+// الترتيب مهم: CORS ثم Authentication (مين انت؟) ثم Authorization (مسموح لك؟)
 app.UseCors("Frontend");
 
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
