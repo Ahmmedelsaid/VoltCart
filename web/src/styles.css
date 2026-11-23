@@ -18,6 +18,9 @@
   --color-accent-fg: #111111;
   --color-danger: #ff7b7b;
   --color-success: #4ade80;
+
+  /* لوح فاتح لصور المنتجات (أغلبها بخلفية بيضاء) عشان ما تبانش غريبة على الثيم الداكن */
+  --color-photo: #f1f3f6;
 }
 
 @layer base {

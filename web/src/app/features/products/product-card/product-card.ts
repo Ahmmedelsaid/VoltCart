@@ -14,14 +14,20 @@ import { Icon } from '../../../shared/ui/icon';
       class="group flex h-full flex-col overflow-hidden rounded-2xl border border-border bg-surface transition hover:-translate-y-0.5 hover:border-accent/60"
     >
       <div
-        class="relative grid aspect-[16/10] place-items-center bg-linear-to-br from-surface-2 to-bg sm:aspect-[4/3]"
+        class="relative grid aspect-[16/10] place-items-center overflow-hidden sm:aspect-[4/3]"
+        [class.bg-photo]="product().imageUrl"
+        [class.bg-linear-to-br]="!product().imageUrl"
+        [class.from-surface-2]="!product().imageUrl"
+        [class.to-bg]="!product().imageUrl"
       >
         @if (product().imageUrl) {
+          <!-- multiply: الخلفية البيضاء للصورة بتذوب في لون اللوح -->
           <img
             [src]="product().imageUrl"
             [alt]="product().name"
             loading="lazy"
-            class="size-full object-cover"
+            decoding="async"
+            class="absolute inset-0 size-full object-contain p-3 mix-blend-multiply brightness-[1.07] transition duration-300 group-hover:scale-105"
           />
         } @else {
           <app-icon
