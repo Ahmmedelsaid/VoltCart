@@ -4,7 +4,12 @@ namespace VoltCart.Api.Dtos;
 
 public record CreateProductDto(
     [Required, StringLength(200, MinimumLength = 3)] string Name,
-    [Required, StringLength(220, MinimumLength = 3)] string Slug,
+    [
+        Required,
+        StringLength(220, MinimumLength = 3),
+        RegularExpression(ValidationPatterns.Slug, ErrorMessage = ValidationPatterns.SlugMessage)
+    ]
+        string Slug,
     [Required, StringLength(50, MinimumLength = 3)] string Sku,
     [StringLength(2000)] string? Description,
     [StringLength(500)] string? ImageUrl,
