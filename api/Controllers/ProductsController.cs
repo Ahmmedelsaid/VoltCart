@@ -1,4 +1,5 @@
 using System.Linq.Expressions;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using VoltCart.Api.Data;
@@ -108,6 +109,7 @@ public class ProductsController(AppDbContext db) : ControllerBase
         return product is null ? NotFound() : product;
     }
 
+    [Authorize(Roles = nameof(UserRole.Admin))]
     [HttpPost]
     public async Task<ActionResult<ProductDetailsDto>> Create(CreateProductDto dto)
     {
@@ -145,6 +147,7 @@ public class ProductsController(AppDbContext db) : ControllerBase
         return CreatedAtAction(nameof(GetProduct), new { id = product.Id }, created);
     }
 
+    [Authorize(Roles = nameof(UserRole.Admin))]
     [HttpPut("{id:int}")]
     public async Task<IActionResult> Update(int id, UpdateProductDto dto)
     {
@@ -178,6 +181,7 @@ public class ProductsController(AppDbContext db) : ControllerBase
     }
 
     // Soft delete: بنخفي المنتج بدل ما نمسحه، عشان الطلبات القديمة (Orders) تفضل شايفاه
+    [Authorize(Roles = nameof(UserRole.Admin))]
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
