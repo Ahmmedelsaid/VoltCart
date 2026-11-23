@@ -1,0 +1,81 @@
+{
+  "app": { "name": "VoltCart" },
+  "nav": { "products": "Products", "skip": "Skip to content" },
+  "lang": { "switchTo": "العربية" },
+  "footer": { "rights": "© {{year}} VoltCart. All rights reserved." },
+  "products": {
+    "title": "Electronics",
+    "subtitle": "The latest phones, laptops, audio and accessories",
+    "count": "{{count}} products",
+    "emptyTitle": "No results",
+    "emptyText": "Try a different search or remove some filters.",
+    "clear": "Clear filters"
+  },
+  "filters": {
+    "title": "Filters",
+    "show": "Show filters",
+    "hide": "Hide filters",
+    "search": "Search",
+    "searchPlaceholder": "Search for a product…",
+    "category": "Category",
+    "brand": "Brand",
+    "all": "All",
+    "price": "Price (EGP)",
+    "min": "Min",
+    "max": "Max",
+    "apply": "Apply",
+    "clearAll": "Clear all"
+  },
+  "sort": {
+    "label": "Sort by",
+    "default": "Default",
+    "price_asc": "Price: low to high",
+    "price_desc": "Price: high to low",
+    "name": "Name",
+    "newest": "Newest"
+  },
+  "pagination": {
+    "label": "Pagination",
+    "prev": "Previous page",
+    "next": "Next page",
+    "page": "Page {{page}}"
+  },
+  "detail": {
+    "home": "Home",
+    "back": "Back to products",
+    "sku": "SKU",
+    "description": "Description",
+    "noDescription": "No description for this product.",
+    "notFoundTitle": "Product not found",
+    "specs": "Specifications"
+  },
+  "stock": {
+    "in": "In stock",
+    "low": "Only {{count}} left",
+    "out": "Out of stock"
+  },
+  "specs": {
+    "ram": "Memory (RAM)",
+    "storage": "Storage",
+    "screen": "Screen",
+    "battery": "Battery",
+    "type": "Type",
+    "noise_cancelling": "Noise cancelling",
+    "connection": "Connection",
+    "dpi": "DPI",
+    "layout": "Layout",
+    "color": "Color"
+  },
+  "errors": {
+    "title": "Something went wrong",
+    "network": "Could not reach the server. Make sure the API is running and try again.",
+    "server": "An unexpected server error occurred.",
+    "notFoundProduct": "This product does not exist or is no longer available.",
+    "retry": "Try again"
+  },
+  "notFound": {
+    "title": "Page not found",
+    "text": "The link you opened is wrong or has moved.",
+    "home": "Back to home"
+  }
+}
