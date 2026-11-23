@@ -13,9 +13,23 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 
     public DbSet<Brand> Brands => Set<Brand>();
 
+    public DbSet<User> Users => Set<User>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<User>(entity =>
+        {
+            entity.Property(u => u.Email).HasMaxLength(254);
+            entity.Property(u => u.PasswordHash).HasMaxLength(500);
+            entity.Property(u => u.FullName).HasMaxLength(100);
+
+            // الـ Role بتتخزن كنص ("Admin") مش رقم، عشان تتقري بسهولة في الـ database
+            entity.Property(u => u.Role).HasConversion<string>().HasMaxLength(20);
+
+            entity.HasIndex(u => u.Email).IsUnique();
+        });
 
         modelBuilder.Entity<Product>(entity =>
         {
