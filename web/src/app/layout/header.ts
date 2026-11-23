@@ -25,9 +25,9 @@ import { Icon } from '../shared/ui/icon';
         <nav class="ms-4 hidden gap-5 text-sm text-muted sm:flex">
           <a
             routerLink="/"
-            routerLinkActive="!text-fg"
+            routerLinkActive="!text-fg after:!opacity-100"
             [routerLinkActiveOptions]="{ exact: true }"
-            class="transition hover:text-fg"
+            class="relative py-1 transition after:absolute after:inset-x-0 after:-bottom-[1.2rem] after:h-0.5 after:rounded-full after:bg-accent after:opacity-0 after:transition hover:text-fg"
           >
             {{ 'nav.products' | transloco }}
           </a>

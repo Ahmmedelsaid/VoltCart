@@ -28,11 +28,27 @@
     color-scheme: dark;
   }
 
+  html {
+    scrollbar-color: #2a3142 transparent;
+  }
+
   body {
     background-color: var(--color-bg);
+    /* وهج أصفر خفيف في أول الصفحة بيدّي عمق للثيم الداكن */
+    background-image: radial-gradient(
+      60rem 26rem at 50% -10rem,
+      rgb(255 214 10 / 0.07),
+      transparent 70%
+    );
+    background-repeat: no-repeat;
     color: var(--color-fg);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection {
+    background: rgb(255 214 10 / 0.35);
+    color: #fff;
   }
 
   :focus-visible {
@@ -43,11 +59,25 @@
 
 @layer components {
   .btn {
-    @apply inline-flex items-center justify-center gap-2 rounded-lg border border-border bg-surface px-3.5 py-2 text-sm font-medium text-fg transition hover:border-muted disabled:cursor-not-allowed disabled:opacity-40;
+    @apply inline-flex items-center justify-center gap-2 rounded-lg border border-border bg-surface px-3.5 py-2 text-sm font-medium text-fg transition hover:border-muted active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40;
   }
 
   .btn-accent {
-    @apply border-accent bg-accent text-accent-fg hover:border-accent hover:brightness-110;
+    @apply border-accent bg-accent text-accent-fg shadow-[0_8px_24px_-10px_rgb(255_214_10/0.55)] hover:border-accent hover:brightness-110;
+  }
+
+  /* اختصارات التصنيفات في أول الصفحة */
+  .chip {
+    @apply inline-flex items-center gap-2 rounded-full border border-border bg-bg/60 px-3.5 py-1.5 text-sm text-fg backdrop-blur transition hover:border-accent/60;
+  }
+
+  .chip-active {
+    @apply border-accent/70 bg-accent/15 text-accent;
+  }
+
+  /* عدّاد المنتجات جنب اسم التصنيف أو الماركة */
+  .count {
+    @apply rounded-full bg-bg/70 px-2 py-0.5 text-[11px] leading-none text-muted;
   }
 
   .field {

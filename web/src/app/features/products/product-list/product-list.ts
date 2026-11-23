@@ -1,7 +1,7 @@
 import { ViewportScroller } from '@angular/common';
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
 import { catchError, map, of, switchMap } from 'rxjs';
 import {
@@ -24,17 +24,59 @@ import { PAGE_SIZE, hasActiveFilters, isProductSort, toQuery, toUrlParams } from
 
 @Component({
   selector: 'app-product-list',
-  imports: [ProductCard, ProductFilters, Pagination, TranslocoPipe, Icon],
+  imports: [ProductCard, ProductFilters, Pagination, RouterLink, TranslocoPipe, Icon],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="mx-auto max-w-7xl px-4 py-8">
-      <header class="mb-6">
-        <h1 class="text-3xl font-bold tracking-tight">{{ 'products.title' | transloco }}</h1>
-        <p class="mt-1 text-muted">{{ 'products.subtitle' | transloco }}</p>
+      <header
+        class="relative isolate mb-8 overflow-hidden rounded-3xl border border-border bg-linear-to-br from-surface-2 via-surface to-bg px-6 py-8 sm:px-10 sm:py-12"
+      >
+        <div
+          aria-hidden="true"
+          class="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(38rem_16rem_at_85%_0%,rgb(255_214_10/0.16),transparent_70%)]"
+        ></div>
+        <app-icon
+          name="bolt"
+          [size]="16"
+          class="pointer-events-none absolute -end-6 -top-6 -z-10 text-accent opacity-[0.06]"
+        />
+        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-accent">
+          {{ 'home.eyebrow' | transloco }}
+        </p>
+        <h1 class="mt-3 max-w-2xl text-3xl font-bold leading-tight tracking-tight sm:text-5xl">
+          {{ 'home.title' | transloco }}
+        </h1>
+        <p class="mt-3 max-w-xl text-muted sm:text-lg">{{ 'home.subtitle' | transloco }}</p>
+
+        @if (quickCategories().length) {
+          <nav class="mt-6 flex flex-wrap gap-2" [attr.aria-label]="'filters.category' | transloco">
+            <a
+              routerLink="/"
+              [queryParams]="{}"
+              class="chip"
+              [class.chip-active]="query().categoryId === undefined"
+            >
+              {{ 'filters.all' | transloco }}
+            </a>
+            @for (category of quickCategories(); track category.id) {
+              <a
+                routerLink="/"
+                [queryParams]="{ categoryId: category.id }"
+                class="chip"
+                [class.chip-active]="query().categoryId === category.id"
+              >
+                {{ category.name }}
+                <span class="count">{{ category.productCount }}</span>
+              </a>
+            }
+          </nav>
+        }
       </header>
 
       <div class="grid gap-6 lg:grid-cols-[16rem_minmax(0,1fr)]">
-        <aside [class]="filtersOpen() ? 'block' : 'hidden lg:block'">
+        <aside
+          [class]="filtersOpen() ? 'block' : 'hidden lg:sticky lg:top-24 lg:block lg:self-start'"
+        >
           <app-product-filters
             [query]="query()"
             [categories]="categories()"
@@ -150,6 +192,11 @@ export class ProductList {
     initialValue: toQuery(this.route.snapshot.queryParamMap),
   });
   protected readonly hasFilters = computed(() => hasActiveFilters(this.query()));
+
+  /** التصنيفات الفرعية (Phones, Laptops...) كاختصارات في أول الصفحة. */
+  protected readonly quickCategories = computed(() =>
+    this.categories().filter((category) => category.parentId !== null),
+  );
 
   private readonly reload = signal(0);
 

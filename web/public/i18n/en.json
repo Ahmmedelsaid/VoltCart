@@ -2,7 +2,17 @@
   "app": { "name": "VoltCart" },
   "nav": { "products": "Products", "skip": "Skip to content" },
   "lang": { "switchTo": "العربية" },
-  "footer": { "rights": "© {{year}} VoltCart. All rights reserved." },
+  "home": {
+    "eyebrow": "Electronics store",
+    "title": "Power up your setup",
+    "subtitle": "Phones, laptops, audio and accessories from the brands you know, all in one place."
+  },
+  "footer": {
+    "rights": "© {{year}} VoltCart. All rights reserved.",
+    "tagline": "The latest phones, laptops and accessories in one place.",
+    "shop": "Shop",
+    "account": "Account"
+  },
   "auth": {
     "login": {
       "title": "Welcome back",
