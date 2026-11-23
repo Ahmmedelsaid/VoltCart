@@ -13,6 +13,7 @@ import { Title } from '@angular/platform-browser';
 import { RouterLink } from '@angular/router';
 import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { of, switchMap } from 'rxjs';
+import { CartService } from '../../../core/cart/cart.service';
 import { ProductDetails } from '../../../core/models/api.models';
 import { ProductsService } from '../../../core/services/products.service';
 import { errorMessageKey } from '../../../core/state/error-message';
@@ -96,6 +97,16 @@ const LOW_STOCK_THRESHOLD = 10;
               </div>
             </div>
 
+            <button
+              type="button"
+              class="btn btn-accent !py-3 text-base"
+              [disabled]="product.stockQuantity === 0 || cart.addingProductId() === product.id"
+              (click)="cart.addFromCatalog(product.id)"
+            >
+              <app-icon name="cart" [size]="1.2" />
+              {{ 'cart.add' | transloco }}
+            </button>
+
             <section>
               <h2 class="mb-2 font-semibold">{{ 'detail.description' | transloco }}</h2>
               <p class="leading-relaxed text-muted">
@@ -163,6 +174,7 @@ export class ProductDetail {
   /** بيجي من الـ route (products/:id) بفضل withComponentInputBinding */
   readonly id = input.required<string>();
 
+  protected readonly cart = inject(CartService);
   private readonly products = inject(ProductsService);
   private readonly transloco = inject(TranslocoService);
   private readonly title = inject(Title);

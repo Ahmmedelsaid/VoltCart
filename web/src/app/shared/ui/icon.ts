@@ -13,7 +13,12 @@ export type IconName =
   | 'user'
   | 'log-out'
   | 'eye'
-  | 'eye-off';
+  | 'eye-off'
+  | 'cart'
+  | 'plus'
+  | 'minus'
+  | 'trash'
+  | 'check';
 
 /** أيقونات SVG بسيطة (stroke) بتاخد لون النص الحالي. الحجم بالـ rem. */
 @Component({
@@ -85,6 +90,25 @@ export type IconName =
             d="M17.9 17.9A10.1 10.1 0 0 1 12 19c-6.4 0-10-7-10-7a18.5 18.5 0 0 1 5.1-5.9M9.9 5.2A9.7 9.7 0 0 1 12 5c6.4 0 10 7 10 7a18.6 18.6 0 0 1-2.2 3.2M1 1l22 22"
           />
           <path d="M14.1 14.1a3 3 0 1 1-4.2-4.2" />
+        }
+        @case ('cart') {
+          <circle cx="9" cy="20" r="1.5" />
+          <circle cx="18" cy="20" r="1.5" />
+          <path d="M2 3h3l2.6 12.2a2 2 0 0 0 2 1.6h7.7a2 2 0 0 0 2-1.5L21 8H6" />
+        }
+        @case ('plus') {
+          <path d="M12 5v14M5 12h14" />
+        }
+        @case ('minus') {
+          <path d="M5 12h14" />
+        }
+        @case ('trash') {
+          <path
+            d="M3 6h18M8 6V4a1 1 0 0 1 1-1h6a1 1 0 0 1 1 1v2M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6M10 11v6M14 11v6"
+          />
+        }
+        @case ('check') {
+          <path d="m5 12 5 5 9-10" />
         }
       }
     </svg>
