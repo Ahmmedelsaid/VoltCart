@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { authGuard, guestGuard } from './core/auth/auth.guard';
 
 export const routes: Routes = [
   {
@@ -11,6 +12,21 @@ export const routes: Routes = [
     path: 'products/:id',
     loadComponent: () =>
       import('./features/products/product-detail/product-detail').then((m) => m.ProductDetail),
+  },
+  {
+    path: 'login',
+    canActivate: [guestGuard],
+    loadComponent: () => import('./features/auth/login/login').then((m) => m.Login),
+  },
+  {
+    path: 'register',
+    canActivate: [guestGuard],
+    loadComponent: () => import('./features/auth/register/register').then((m) => m.Register),
+  },
+  {
+    path: 'account',
+    canActivate: [authGuard],
+    loadComponent: () => import('./features/account/account').then((m) => m.Account),
   },
   {
     path: '**',

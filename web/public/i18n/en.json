@@ -2,7 +2,75 @@
   "app": { "name": "VoltCart" },
   "nav": { "products": "Products", "skip": "Skip to content" },
   "lang": { "switchTo": "العربية" },
-  "footer": { "rights": "© {{year}} VoltCart. All rights reserved." },
+  "home": {
+    "eyebrow": "Electronics store",
+    "title": "Power up your setup",
+    "subtitle": "Phones, laptops, audio and accessories from the brands you know, all in one place."
+  },
+  "footer": {
+    "rights": "© {{year}} VoltCart. All rights reserved.",
+    "tagline": "The latest phones, laptops and accessories in one place.",
+    "shop": "Shop",
+    "account": "Account"
+  },
+  "auth": {
+    "login": {
+      "title": "Welcome back",
+      "subtitle": "Sign in to your VoltCart account",
+      "cta": "Sign in",
+      "submit": "Sign in",
+      "submitting": "Signing in…",
+      "noAccount": "New to VoltCart?",
+      "createAccount": "Create an account"
+    },
+    "register": {
+      "title": "Create your account",
+      "subtitle": "Join VoltCart to save your details and track your orders",
+      "cta": "Create account",
+      "submit": "Create account",
+      "submitting": "Creating account…",
+      "haveAccount": "Already have an account?",
+      "signIn": "Sign in",
+      "passwordHint": "At least 8 characters, with a letter and a number."
+    },
+    "fields": {
+      "fullName": "Full name",
+      "email": "Email",
+      "password": "Password",
+      "confirmPassword": "Confirm password",
+      "showPassword": "Show password",
+      "hidePassword": "Hide password"
+    },
+    "validation": {
+      "nameRequired": "Please enter your name.",
+      "nameShort": "Your name must be at least 2 characters.",
+      "emailRequired": "Please enter your email.",
+      "emailInvalid": "Enter a valid email address.",
+      "passwordRequired": "Please enter your password.",
+      "passwordShort": "Use at least 8 characters.",
+      "passwordWeak": "Include at least one letter and one number.",
+      "confirmRequired": "Please confirm your password.",
+      "mismatch": "The passwords do not match."
+    },
+    "errors": {
+      "invalidCredentials": "Incorrect email or password.",
+      "emailTaken": "An account with this email already exists.",
+      "tooManyAttempts": "Too many attempts. Please wait a minute and try again.",
+      "invalidInput": "Some details are not valid. Please check the form."
+    },
+    "logout": "Sign out"
+  },
+  "account": {
+    "title": "My account",
+    "greeting": "Hello, {{name}}",
+    "profile": "Profile",
+    "name": "Name",
+    "email": "Email",
+    "orders": "Orders",
+    "noOrders": "You have no orders yet.",
+    "startShopping": "Start shopping",
+    "signOut": "Sign out"
+  },
   "products": {
     "title": "Electronics",
     "subtitle": "The latest phones, laptops, audio and accessories",

@@ -46,7 +46,7 @@ const LOW_STOCK_THRESHOLD = 10;
 
         <div class="grid gap-8 lg:grid-cols-2">
           <div
-            class="relative grid aspect-square place-items-center overflow-hidden rounded-3xl border border-border"
+            class="relative grid aspect-square place-items-center overflow-hidden rounded-3xl border border-border lg:sticky lg:top-24 lg:self-start"
             [class.bg-photo]="product.imageUrl"
             [class.bg-linear-to-br]="!product.imageUrl"
             [class.from-surface-2]="!product.imageUrl"
@@ -71,25 +71,29 @@ const LOW_STOCK_THRESHOLD = 10;
               </h1>
             </div>
 
-            <p class="text-3xl font-bold text-accent">{{ product.price | price }}</p>
+            <div class="grid gap-3 rounded-2xl border border-border bg-surface/60 p-5">
+              <p class="text-4xl font-bold tracking-tight text-accent">
+                {{ product.price | price }}
+              </p>
 
-            <div class="flex flex-wrap items-center gap-3 text-sm">
-              @if (product.stockQuantity === 0) {
-                <span class="rounded-full bg-danger/15 px-3 py-1 font-medium text-danger">
-                  {{ 'stock.out' | transloco }}
-                </span>
-              } @else if (product.stockQuantity <= lowStock) {
-                <span class="rounded-full bg-accent/15 px-3 py-1 font-medium text-accent">
-                  {{ 'stock.low' | transloco: { count: product.stockQuantity } }}
-                </span>
-              } @else {
-                <span class="rounded-full bg-success/15 px-3 py-1 font-medium text-success">
-                  {{ 'stock.in' | transloco }}
-                </span>
-              }
-              <span class="text-muted"
-                >{{ 'detail.sku' | transloco }}: <bdi>{{ product.sku }}</bdi></span
-              >
+              <div class="flex flex-wrap items-center gap-3 text-sm">
+                @if (product.stockQuantity === 0) {
+                  <span class="rounded-full bg-danger/15 px-3 py-1 font-medium text-danger">
+                    {{ 'stock.out' | transloco }}
+                  </span>
+                } @else if (product.stockQuantity <= lowStock) {
+                  <span class="rounded-full bg-accent/15 px-3 py-1 font-medium text-accent">
+                    {{ 'stock.low' | transloco: { count: product.stockQuantity } }}
+                  </span>
+                } @else {
+                  <span class="rounded-full bg-success/15 px-3 py-1 font-medium text-success">
+                    {{ 'stock.in' | transloco }}
+                  </span>
+                }
+                <span class="text-muted"
+                  >{{ 'detail.sku' | transloco }}: <bdi>{{ product.sku }}</bdi></span
+                >
+              </div>
             </div>
 
             <section>
