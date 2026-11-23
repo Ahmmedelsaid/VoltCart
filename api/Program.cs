@@ -11,6 +11,20 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddOpenApi();
 
+// CORS: المتصفح بيمنع الـ Angular (localhost:4200) يكلّم الـ API (localhost:5034)
+// لأن الـ origin مختلف. هنا بنسمح بالـ origins اللي في appsettings بس.
+var allowedOrigins = builder.Configuration.GetSection("Cors:AllowedOrigins").Get<string[]>() ?? [];
+
+builder.Services.AddCors(options =>
+    options.AddPolicy("Frontend", policy =>
+        policy
+            .WithOrigins(allowedOrigins)
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .WithExposedHeaders("Location")
+    )
+);
+
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
@@ -23,6 +37,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+// لازم يجي قبل UseAuthorization
+app.UseCors("Frontend");
 
 app.UseAuthorization();
 
