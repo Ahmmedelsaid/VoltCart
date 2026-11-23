@@ -26,8 +26,10 @@ import { Icon } from './shared/ui/icon';
     </main>
 
     <footer class="mt-20 border-t border-border">
-      <div class="mx-auto flex max-w-7xl flex-wrap justify-between gap-x-16 gap-y-10 px-4 py-12">
-        <div class="max-w-xs">
+      <div
+        class="mx-auto grid max-w-7xl gap-x-8 gap-y-10 px-4 py-12 grid-cols-2 lg:grid-cols-[1.6fr_1fr_1fr_1fr]"
+      >
+        <div class="col-span-2 max-w-xs lg:col-span-1">
           <a routerLink="/" class="inline-flex items-center gap-2 text-xl font-bold" dir="ltr">
             <app-icon name="bolt" [size]="1.4" class="text-accent" />
             <span>Volt<span class="text-accent">Cart</span></span>
@@ -37,7 +39,7 @@ import { Icon } from './shared/ui/icon';
           </p>
         </div>
 
-        <div class="flex flex-wrap gap-x-16 gap-y-10">
+        <div class="contents">
           <nav [attr.aria-label]="'footer.shop' | transloco">
             <h2 class="mb-3 text-sm font-semibold">{{ 'footer.shop' | transloco }}</h2>
             <ul class="space-y-2 text-sm text-fg/70">
@@ -46,6 +48,30 @@ import { Icon } from './shared/ui/icon';
                   {{ 'footer.allProducts' | transloco }}
                 </a>
               </li>
+              <li>
+                <a
+                  routerLink="/"
+                  [queryParams]="{ sort: 'newest' }"
+                  class="transition hover:text-accent"
+                >
+                  {{ 'sort.newest' | transloco }}
+                </a>
+              </li>
+              <li>
+                <a
+                  routerLink="/"
+                  [queryParams]="{ sort: 'price_asc' }"
+                  class="transition hover:text-accent"
+                >
+                  {{ 'sort.price_asc' | transloco }}
+                </a>
+              </li>
+            </ul>
+          </nav>
+
+          <nav [attr.aria-label]="'footer.categories' | transloco">
+            <h2 class="mb-3 text-sm font-semibold">{{ 'footer.categories' | transloco }}</h2>
+            <ul class="space-y-2 text-sm text-fg/70">
               @for (category of categories(); track category.id) {
                 <li>
                   <a
