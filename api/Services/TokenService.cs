@@ -1,4 +1,5 @@
 using System.Security.Claims;
+using System.Security.Cryptography;
 using System.Text;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.JsonWebTokens;
@@ -41,4 +42,14 @@ public class TokenService(IOptions<JwtOptions> options, TimeProvider clock)
 
         return (handler.CreateToken(descriptor), expires);
     }
+
+    /// <summary>Creates a random refresh token. Only its hash is ever stored.</summary>
+    public (string Token, string Hash) GenerateRefreshToken()
+    {
+        var token = Base64UrlEncoder.Encode(RandomNumberGenerator.GetBytes(64));
+        return (token, Hash(token));
+    }
+
+    public static string Hash(string token) =>
+        Convert.ToHexString(SHA256.HashData(Encoding.UTF8.GetBytes(token)));
 }

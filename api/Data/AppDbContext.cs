@@ -15,9 +15,27 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 
     public DbSet<User> Users => Set<User>();
 
+    public DbSet<RefreshToken> RefreshTokens => Set<RefreshToken>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<RefreshToken>(entity =>
+        {
+            entity.Property(t => t.TokenHash).HasMaxLength(64);
+            entity.Property(t => t.ReplacedByHash).HasMaxLength(64);
+
+            entity.HasIndex(t => t.TokenHash).IsUnique();
+            entity.HasIndex(t => t.FamilyId);
+
+            // مسح المستخدم بيمسح جلساته
+            entity
+                .HasOne(t => t.User)
+                .WithMany()
+                .HasForeignKey(t => t.UserId)
+                .OnDelete(DeleteBehavior.Cascade);
+        });
 
         modelBuilder.Entity<User>(entity =>
         {
