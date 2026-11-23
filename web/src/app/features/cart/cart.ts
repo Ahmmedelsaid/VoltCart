@@ -154,10 +154,15 @@ import { Icon } from '../../shared/ui/icon';
               @if (hasUnavailable()) {
                 <p class="text-xs text-danger">{{ 'cart.fixUnavailable' | transloco }}</p>
               }
-              <button type="button" class="btn btn-accent w-full" disabled>
-                {{ 'cart.checkout' | transloco }}
-              </button>
-              <p class="text-center text-xs text-muted">{{ 'cart.checkoutSoon' | transloco }}</p>
+              @if (hasUnavailable()) {
+                <button type="button" class="btn btn-accent w-full" disabled>
+                  {{ 'cart.checkout' | transloco }}
+                </button>
+              } @else {
+                <a routerLink="/checkout" class="btn btn-accent w-full py-2.5">
+                  {{ 'cart.checkout' | transloco }}
+                </a>
+              }
               <a routerLink="/" class="btn w-full">{{ 'cart.continue' | transloco }}</a>
             </aside>
           </div>
