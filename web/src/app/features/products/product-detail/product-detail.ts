@@ -46,10 +46,18 @@ const LOW_STOCK_THRESHOLD = 10;
 
         <div class="grid gap-8 lg:grid-cols-2">
           <div
-            class="grid aspect-square place-items-center overflow-hidden rounded-3xl border border-border bg-linear-to-br from-surface-2 to-bg"
+            class="relative grid aspect-square place-items-center overflow-hidden rounded-3xl border border-border"
+            [class.bg-photo]="product.imageUrl"
+            [class.bg-linear-to-br]="!product.imageUrl"
+            [class.from-surface-2]="!product.imageUrl"
+            [class.to-bg]="!product.imageUrl"
           >
             @if (product.imageUrl) {
-              <img [src]="product.imageUrl" [alt]="product.name" class="size-full object-cover" />
+              <img
+                [src]="product.imageUrl"
+                [alt]="product.name"
+                class="absolute inset-0 size-full object-contain p-8 mix-blend-multiply brightness-[1.07]"
+              />
             } @else {
               <app-icon name="box" [size]="7" class="text-muted/40" />
             }
