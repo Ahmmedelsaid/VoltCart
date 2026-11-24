@@ -6,7 +6,12 @@ import {
   provideAppInitializer,
   provideBrowserGlobalErrorListeners,
 } from '@angular/core';
-import { provideRouter, withComponentInputBinding } from '@angular/router';
+import {
+  provideRouter,
+  withComponentInputBinding,
+  withInMemoryScrolling,
+  withViewTransitions,
+} from '@angular/router';
 import { provideTransloco, TranslocoService } from '@jsverse/transloco';
 import { firstValueFrom, timeout } from 'rxjs';
 
@@ -21,7 +26,14 @@ export const appConfig: ApplicationConfig = {
   providers: [
     provideBrowserGlobalErrorListeners(),
     // withComponentInputBinding: بارامترات الـ route (:id) بتوصل للـ component كـ input
-    provideRouter(routes, withComponentInputBinding()),
+    // withViewTransitions: انتقال ناعم بين الصفحات. withInMemoryScrolling: كل صفحة تبدأ من فوق،
+    // والرجوع (Back) بيرجّع مكان التمرير القديم
+    provideRouter(
+      routes,
+      withComponentInputBinding(),
+      withViewTransitions(),
+      withInMemoryScrolling({ scrollPositionRestoration: 'enabled', anchorScrolling: 'enabled' }),
+    ),
     // الترتيب مهم: problemDetails برّه، فالأخطاء بتعدّي على auth (يجدّد الـ token لو لزم) الأول
     provideHttpClient(withInterceptors([problemDetailsInterceptor, authInterceptor])),
     provideTransloco({

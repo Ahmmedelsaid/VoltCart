@@ -31,7 +31,12 @@ export type IconName =
   | 'cash'
   | 'menu'
   | 'mail'
-  | 'clock';
+  | 'clock'
+  | 'camera'
+  | 'gamepad'
+  | 'tablet'
+  | 'watch'
+  | 'tv';
 
 /** أيقونات SVG بسيطة (stroke) بتاخد لون النص الحالي. الحجم بالـ rem. */
 @Component({
@@ -169,6 +174,30 @@ export type IconName =
         @case ('clock') {
           <circle cx="12" cy="12" r="10" />
           <path d="M12 6v6l4 2" />
+        }
+        @case ('camera') {
+          <path
+            d="M4 8h3l2-3h6l2 3h3a1 1 0 0 1 1 1v9a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V9a1 1 0 0 1 1-1z"
+          />
+          <circle cx="12" cy="13" r="3.5" />
+        }
+        @case ('gamepad') {
+          <path
+            d="M6 8h12a4 4 0 0 1 4 4v3a3 3 0 0 1-5.2 2L15 15H9l-1.8 2A3 3 0 0 1 2 15v-3a4 4 0 0 1 4-4z"
+          />
+          <path d="M8 11v3M6.5 12.5h3M15.5 11.5h.01M17.5 13.5h.01" />
+        }
+        @case ('tablet') {
+          <rect x="5" y="2.5" width="14" height="19" rx="2" />
+          <path d="M11 18.5h2" />
+        }
+        @case ('watch') {
+          <rect x="7" y="6" width="10" height="12" rx="3" />
+          <path d="m9 6 .8-3h4.4L15 6M9 18l.8 3h4.4l.8-3" />
+        }
+        @case ('tv') {
+          <rect x="2.5" y="4" width="19" height="13" rx="2" />
+          <path d="M8 21h8M12 17v4" />
         }
         @case ('pin') {
           <path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0z" />

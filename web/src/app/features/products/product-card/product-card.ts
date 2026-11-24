@@ -11,10 +11,10 @@ import { Icon } from '../../../shared/ui/icon';
   imports: [RouterLink, TranslocoPipe, PricePipe, Icon],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="relative h-full">
+    <div class="group/card relative h-full">
       <a
         [routerLink]="['/products', product().id]"
-        class="card group flex h-full flex-col overflow-hidden transition duration-200 hover:-translate-y-0.5 hover:border-accent/40 hover:shadow-lift"
+        class="card group flex h-full flex-col overflow-hidden transition duration-300 hover:-translate-y-1.5 hover:border-accent/40 hover:shadow-glow"
       >
         <div
           class="relative grid aspect-square place-items-center overflow-hidden sm:aspect-[4/3]"
@@ -27,7 +27,7 @@ import { Icon } from '../../../shared/ui/icon';
               [alt]="product().name"
               loading="lazy"
               decoding="async"
-              class="absolute inset-0 size-full object-contain p-4 mix-blend-multiply brightness-[1.05] transition duration-300 group-hover:scale-105"
+              class="absolute inset-0 size-full object-contain p-4 mix-blend-multiply brightness-[1.05] transition duration-500 group-hover:scale-110 group-hover:-rotate-2"
             />
           } @else {
             <app-icon
@@ -55,7 +55,7 @@ import { Icon } from '../../../shared/ui/icon';
       </a>
       <button
         type="button"
-        class="absolute bottom-3 end-3 grid size-10 place-items-center rounded-full bg-accent text-accent-fg shadow-[0_8px_18px_-8px_rgb(37_99_235/0.8)] transition hover:bg-accent-hover active:scale-95 disabled:opacity-50"
+        class="absolute bottom-3 end-3 grid size-10 place-items-center rounded-full bg-accent text-accent-fg shadow-[0_8px_18px_-8px_rgb(37_99_235/0.8)] transition duration-200 group-hover/card:scale-110 hover:bg-accent-hover active:scale-90 disabled:opacity-50"
         [attr.aria-label]="'cart.add' | transloco"
         [disabled]="cart.addingProductId() === product().id"
         (click)="cart.addFromCatalog(product().id)"

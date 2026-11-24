@@ -27,6 +27,10 @@ export const routes: Routes = [
     loadComponent: () => import('./features/contact/contact').then((m) => m.Contact),
   },
   {
+    path: 'credits',
+    loadComponent: () => import('./features/credits/credits').then((m) => m.Credits),
+  },
+  {
     path: 'login',
     canActivate: [guestGuard],
     loadComponent: () => import('./features/auth/login/login').then((m) => m.Login),

@@ -36,6 +36,11 @@
         "title": "Friendly support",
         "text": "We answer by phone and message."
       }
+    },
+    "stats": {
+      "products": "Products",
+      "categories": "Categories",
+      "governorates": "Governorates"
     }
   },
   "footer": {
@@ -47,7 +52,8 @@
     "account": "Account",
     "company": "VoltCart",
     "about": "About us",
-    "contact": "Contact us"
+    "contact": "Contact us",
+    "credits": "Photo credits"
   },
   "auth": {
     "login": {
@@ -381,5 +387,10 @@
       "invalid": "Some details are not valid. Please check the form.",
       "tooMany": "You have sent too many messages. Please try again in a few minutes."
     }
+  },
+  "credits": {
+    "title": "Photo credits",
+    "intro": "Some product photos come from Wikimedia Commons and are used under free licences. Thank you to the photographers. Other product images on this site are simple illustrations.",
+    "empty": "No third-party photos are used yet."
   }
 }

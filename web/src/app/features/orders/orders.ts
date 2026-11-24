@@ -93,7 +93,7 @@ import { OrderStatusBadge } from '../../shared/ui/order-status';
       } @else {
         <div class="grid gap-3" aria-hidden="true">
           @for (placeholder of skeletons; track placeholder) {
-            <div class="h-20 animate-pulse rounded-2xl border border-border bg-surface"></div>
+            <div class="h-20 skeleton rounded-2xl border border-border"></div>
           }
         </div>
       }

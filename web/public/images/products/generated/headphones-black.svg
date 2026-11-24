@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-label="headphones">
+    <ellipse cx="200" cy="274" rx="110" ry="9" fill="#0f172a" opacity="0.1"/>
+    <path d="M112 172C112 52 288 52 288 172" fill="none" stroke="#12151d" stroke-width="22" stroke-linecap="round"/>
+    <path d="M112 172C112 58 288 58 288 172" fill="none" stroke="#232936" stroke-width="14" stroke-linecap="round"/>
+    <rect x="80" y="150" width="58" height="98" rx="26" fill="#232936" stroke="#12151d" stroke-width="2"/>
+    <rect x="262" y="150" width="58" height="98" rx="26" fill="#232936" stroke="#12151d" stroke-width="2"/>
+    <ellipse cx="109" cy="199" rx="18" ry="34" fill="#12151d"/>
+    <ellipse cx="291" cy="199" rx="18" ry="34" fill="#12151d"/></svg>

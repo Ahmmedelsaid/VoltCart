@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-label="cable">
+    <ellipse cx="200" cy="274" rx="120" ry="9" fill="#0f172a" opacity="0.1"/>
+    <path d="M78 236C60 100 190 40 200 150S340 250 322 96" fill="none" stroke="#f1f3f8" stroke-width="9" stroke-linecap="round"/>
+    <path d="M78 236C60 100 190 40 200 150S340 250 322 96" fill="none" stroke="#cdd3df" stroke-width="2" opacity="0.4" stroke-linecap="round"/>
+    <rect x="66" y="232" width="24" height="38" rx="6" fill="#d0d5de" stroke="#98a0af" stroke-width="2"/>
+    <rect x="310" y="52" width="24" height="38" rx="6" fill="#d0d5de" stroke="#98a0af" stroke-width="2"/></svg>
