@@ -20,11 +20,11 @@ import { Icon } from './icon';
 
 type LeafletModule = typeof Leaflet;
 
-/** دبوس أصفر بشكل الـ theme (SVG جوه divIcon بدل صور Leaflet الافتراضية اللي بتحتاج ملفات). */
+/** دبوس أزرق بشكل الـ theme (SVG جوه divIcon بدل صور Leaflet الافتراضية اللي بتحتاج ملفات). */
 const PIN_HTML = `
   <svg viewBox="0 0 36 44" width="36" height="44" aria-hidden="true" style="filter: drop-shadow(0 4px 6px rgb(0 0 0 / 0.45))">
-    <path d="M18 43C18 43 3 28.5 3 16.5a15 15 0 0 1 30 0C33 28.5 18 43 18 43z" fill="#ffd60a" stroke="#111" stroke-width="2"/>
-    <circle cx="18" cy="16.5" r="5.5" fill="#111"/>
+    <path d="M18 43C18 43 3 28.5 3 16.5a15 15 0 0 1 30 0C33 28.5 18 43 18 43z" fill="#2563eb" stroke="#fff" stroke-width="2"/>
+    <circle cx="18" cy="16.5" r="5.5" fill="#fff"/>
   </svg>`;
 
 const TILES = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';

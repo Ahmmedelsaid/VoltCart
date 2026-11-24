@@ -28,7 +28,9 @@ import { OrderStatusBadge } from '../../shared/ui/order-status';
           >
             <app-icon name="box" [size]="2.5" class="text-muted/60" />
             <p class="text-muted">{{ 'account.noOrders' | transloco }}</p>
-            <a routerLink="/" class="btn btn-accent">{{ 'account.startShopping' | transloco }}</a>
+            <a routerLink="/products" class="btn btn-accent">{{
+              'account.startShopping' | transloco
+            }}</a>
           </div>
         } @else {
           <ul class="grid gap-3">

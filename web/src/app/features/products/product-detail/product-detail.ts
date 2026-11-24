@@ -130,7 +130,7 @@ const LOW_STOCK_THRESHOLD = 10;
               </section>
             }
 
-            <a routerLink="/" class="btn mt-2 self-start">
+            <a routerLink="/products" class="btn mt-2 self-start">
               <app-icon name="chevron-left" [size]="1" class="rtl:rotate-180" />
               {{ 'detail.back' | transloco }}
             </a>
@@ -153,7 +153,7 @@ const LOW_STOCK_THRESHOLD = 10;
                 {{ 'errors.retry' | transloco }}
               </button>
             }
-            <a routerLink="/" class="btn">{{ 'detail.back' | transloco }}</a>
+            <a routerLink="/products" class="btn">{{ 'detail.back' | transloco }}</a>
           </div>
         </div>
       } @else {

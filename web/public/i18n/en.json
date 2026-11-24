@@ -12,7 +12,31 @@
   "home": {
     "eyebrow": "Electronics store",
     "title": "Power up your setup",
-    "subtitle": "Phones, laptops, audio and accessories from the brands you know, all in one place."
+    "subtitle": "Phones, laptops, audio and accessories from the brands you know, all in one place.",
+    "shopNow": "Shop now",
+    "newArrivals": "New arrivals",
+    "viewAll": "View all",
+    "shopByCategory": "Shop by category",
+    "topBrands": "Top brands",
+    "products": "{{count}} products",
+    "values": {
+      "cod": {
+        "title": "Cash on delivery",
+        "text": "Pay when your order arrives."
+      },
+      "delivery": {
+        "title": "Fast delivery",
+        "text": "To every governorate in Egypt."
+      },
+      "warranty": {
+        "title": "Genuine products",
+        "text": "Authentic items from trusted brands."
+      },
+      "support": {
+        "title": "Friendly support",
+        "text": "We answer by phone and message."
+      }
+    }
   },
   "footer": {
     "rights": "© {{year}} VoltCart. All rights reserved.",
@@ -86,7 +110,8 @@
     "count": "{{count}} products",
     "emptyTitle": "No results",
     "emptyText": "Try a different search or remove some filters.",
-    "clear": "Clear filters"
+    "clear": "Clear filters",
+    "pageTitle": "All products"
   },
   "filters": {
     "title": "Filters",
@@ -252,5 +277,10 @@
       "notFound": "This order does not exist.",
       "cannotCancel": "This order can no longer be cancelled."
     }
+  },
+  "header": {
+    "promo": "Cash on delivery across Egypt",
+    "allProducts": "All products",
+    "searchLabel": "Search products"
   }
 }

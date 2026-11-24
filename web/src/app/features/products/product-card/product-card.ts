@@ -14,23 +14,20 @@ import { Icon } from '../../../shared/ui/icon';
     <div class="relative h-full">
       <a
         [routerLink]="['/products', product().id]"
-        class="group flex h-full flex-col rounded-2xl border border-border bg-surface p-2 transition duration-200 hover:-translate-y-0.5 hover:border-accent/50 hover:shadow-[0_18px_40px_-22px_rgb(255_214_10/0.45)]"
+        class="card group flex h-full flex-col overflow-hidden transition duration-200 hover:-translate-y-0.5 hover:border-accent/40 hover:shadow-lift"
       >
         <div
-          class="relative grid aspect-[16/10] place-items-center overflow-hidden rounded-xl sm:aspect-[4/3]"
+          class="relative grid aspect-square place-items-center overflow-hidden sm:aspect-[4/3]"
           [class.bg-photo]="product().imageUrl"
-          [class.bg-linear-to-br]="!product().imageUrl"
-          [class.from-surface-2]="!product().imageUrl"
-          [class.to-bg]="!product().imageUrl"
+          [class.bg-surface-2]="!product().imageUrl"
         >
           @if (product().imageUrl) {
-            <!-- multiply: الخلفية البيضاء للصورة بتذوب في لون اللوح -->
             <img
               [src]="product().imageUrl"
               [alt]="product().name"
               loading="lazy"
               decoding="async"
-              class="absolute inset-0 size-full object-contain p-3 mix-blend-multiply brightness-[1.07] transition duration-300 group-hover:scale-105"
+              class="absolute inset-0 size-full object-contain p-4 mix-blend-multiply brightness-[1.05] transition duration-300 group-hover:scale-105"
             />
           } @else {
             <app-icon
@@ -41,27 +38,29 @@ import { Icon } from '../../../shared/ui/icon';
           }
         </div>
 
-        <div class="flex flex-1 flex-col gap-1 px-2 pb-2 pt-3">
-          <span class="text-[11px] font-semibold uppercase tracking-wider text-muted">
+        <div class="flex flex-1 flex-col gap-1 border-t border-border/70 p-3.5">
+          <span class="text-[11px] font-semibold uppercase tracking-wider text-accent">
             {{ product().brandName }}
           </span>
-          <h3 class="line-clamp-2 font-semibold leading-snug">{{ product().name }}</h3>
+          <h3 class="line-clamp-2 text-sm font-semibold leading-snug sm:text-base">
+            {{ product().name }}
+          </h3>
           <span class="text-xs text-muted">{{ product().categoryName }}</span>
 
           <div class="mt-auto flex items-end justify-between gap-2 pt-3">
-            <p class="text-lg font-bold">{{ product().price | price }}</p>
-            <span class="size-9 shrink-0" aria-hidden="true"></span>
+            <p class="text-base font-bold sm:text-lg">{{ product().price | price }}</p>
+            <span class="size-10 shrink-0" aria-hidden="true"></span>
           </div>
         </div>
       </a>
       <button
         type="button"
-        class="absolute bottom-4 end-4 grid size-9 place-items-center rounded-full bg-surface-2 text-fg transition hover:bg-accent hover:text-accent-fg active:scale-95 disabled:opacity-50"
+        class="absolute bottom-3 end-3 grid size-10 place-items-center rounded-full bg-accent text-accent-fg shadow-[0_8px_18px_-8px_rgb(37_99_235/0.8)] transition hover:bg-accent-hover active:scale-95 disabled:opacity-50"
         [attr.aria-label]="'cart.add' | transloco"
         [disabled]="cart.addingProductId() === product().id"
         (click)="cart.addFromCatalog(product().id)"
       >
-        <app-icon name="cart" [size]="1.1" />
+        <app-icon name="cart" [size]="1.15" />
       </button>
     </div>
   `,

@@ -86,7 +86,7 @@ import { OrderStatusBadge } from '../../shared/ui/order-status';
               <div class="grid justify-items-center gap-2 py-4 text-center">
                 <app-icon name="box" [size]="2.2" class="text-muted/50" />
                 <p class="text-sm text-muted">{{ 'account.noOrders' | transloco }}</p>
-                <a routerLink="/" class="btn btn-accent mt-1">
+                <a routerLink="/products" class="btn btn-accent mt-1">
                   {{ 'account.startShopping' | transloco }}
                 </a>
               </div>
