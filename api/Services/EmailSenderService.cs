@@ -58,7 +58,11 @@ public sealed class EmailSenderService(
             cancellationToken
         );
         if (!string.IsNullOrEmpty(settings.UserName))
-            await client.AuthenticateAsync(settings.UserName, settings.Password ?? "", cancellationToken);
+            await client.AuthenticateAsync(
+                settings.UserName,
+                settings.Password ?? "",
+                cancellationToken
+            );
 
         await client.SendAsync(mime, cancellationToken);
         await client.DisconnectAsync(true, cancellationToken);

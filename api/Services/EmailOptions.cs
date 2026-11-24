@@ -23,6 +23,14 @@ public class EmailOptions
     /// <summary>Where "Contact us" messages are delivered.</summary>
     public string? ContactRecipient { get; set; }
 
+    /// <summary>Where "new order" alerts go. Defaults to <see cref="ContactRecipient"/>.</summary>
+    public string? OrderRecipient { get; set; }
+
+    /// <summary>Public address of the website, used for links inside emails (for example the order page).</summary>
+    public string WebUrl { get; set; } = "http://localhost:4200";
+
+    public string? ShopRecipient => OrderRecipient ?? ContactRecipient;
+
     public string SenderAddress => From ?? UserName ?? "";
 
     public bool IsConfigured =>
