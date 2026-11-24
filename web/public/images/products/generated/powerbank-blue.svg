@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-label="powerbank">
+    <ellipse cx="200" cy="274" rx="80" ry="9" fill="#0f172a" opacity="0.1"/>
+    <rect x="128" y="46" width="144" height="208" rx="24" fill="#3b6fe0" stroke="#2349a6" stroke-width="2.5"/>
+    <rect x="128" y="130" width="144" height="44" fill="#ffffff" opacity="0.16"/>
+    <circle cx="166" cy="78" r="5" fill="#59e0a0"/><circle cx="188" cy="78" r="5" fill="#59e0a0"/><circle cx="210" cy="78" r="5" fill="#59e0a0"/><circle cx="232" cy="78" r="5" fill="#59e0a0"/>
+    <rect x="168" y="228" width="64" height="12" rx="6" fill="#2349a6"/></svg>

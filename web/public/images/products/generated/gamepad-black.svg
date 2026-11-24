@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-label="gamepad">
+    <ellipse cx="200" cy="274" rx="110" ry="9" fill="#0f172a" opacity="0.1"/>
+    <path d="M96 156c0-40 26-64 56-64h96c30 0 56 24 56 64 0 48-14 100-46 100-22 0-30-34-58-34s-36 34-58 34c-32 0-46-52-46-100z" fill="#232936" stroke="#12151d" stroke-width="2.5"/>
+    <circle cx="150" cy="150" r="19" fill="#12151d"/>
+    <circle cx="238" cy="188" r="19" fill="#12151d"/>
+    <path d="M148 186v-24m-12 12h24" stroke="#12151d" stroke-width="7" stroke-linecap="round" transform="translate(0 4)"/>
+    <circle cx="262" cy="132" r="7" fill="#454d60"/><circle cx="286" cy="150" r="7" fill="#454d60"/>
+    <circle cx="238" cy="150" r="7" fill="#454d60"/><circle cx="262" cy="168" r="7" fill="#454d60"/></svg>

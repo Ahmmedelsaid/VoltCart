@@ -145,7 +145,7 @@ import { Icon } from '../shared/ui/icon';
             <a
               routerLink="/products"
               [queryParams]="{ sort: 'newest' }"
-              class="block whitespace-nowrap rounded-lg px-3 py-1.5 text-highlight transition hover:bg-surface-2"
+              class="block whitespace-nowrap rounded-lg px-3 py-1.5 text-highlight-strong transition hover:bg-surface-2"
             >
               {{ 'home.newArrivals' | transloco }}
             </a>
@@ -172,7 +172,8 @@ export class Header {
   protected readonly categories = computed(() =>
     this.allCategories()
       .filter((category) => category.parentId !== null)
-      .slice(0, 8),
+      .sort((a, b) => b.productCount - a.productCount)
+      .slice(0, 10),
   );
 
   protected search(event: Event, term: string): void {
