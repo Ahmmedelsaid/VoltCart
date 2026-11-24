@@ -32,3 +32,44 @@ jobs:
         with:
           dotnet-version: 10.0.x
       - run: dotnet build api --configuration Release
+
+  docker:
+    name: Docker image (build and smoke test)
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_ROOT_PASSWORD: ci-only
+          MYSQL_DATABASE: voltcart
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -pci-only"
+          --health-interval=5s
+          --health-timeout=5s
+          --health-retries=20
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build the image
+        run: docker build -t voltcart .
+      - name: Start it against MySQL
+        run: |
+          docker run -d --name voltcart --network host \
+            -e PORT=8080 \
+            -e "ConnectionStrings__Default=Server=127.0.0.1;Port=3306;Database=voltcart;User=root;Password=ci-only" \
+            -e Jwt__Key=ci-only-key-0123456789-abcdefghijklmnopqrstuvwxyz \
+            -e Database__MigrateOnStartup=true \
+            -e Seed__DemoData=true \
+            voltcart
+          for i in $(seq 1 60); do curl -fsS http://localhost:8080/api/health && break; sleep 2; done
+      - name: Smoke test
+        run: |
+          curl -fsS http://localhost:8080/api/health
+          curl -fsS http://localhost:8080/ | grep -q "<app-root"
+          curl -fsS http://localhost:8080/products/1 | grep -q "<app-root"
+          test "$(curl -s -o /dev/null -w '%{http_code}' http://localhost:8080/api/does-not-exist)" = "404"
+          curl -fsS "http://localhost:8080/api/products?pageSize=1" | grep -Eq '"totalCount":[1-9][0-9]*'
+      - name: Container logs (on failure)
+        if: failure()
+        run: docker logs voltcart

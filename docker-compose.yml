@@ -1,0 +1,37 @@
+# تشغيل المشروع كله بأمر واحد (الموقع + الـ API + MySQL):
+#   docker compose up --build
+# وبعدين افتح http://localhost:8080
+#
+# القيم الافتراضية دي للتجربة المحلية بس. على سيرفر حقيقي حط قيم قوية في ملف .env (انظر .env.example).
+services:
+  db:
+    image: mysql:8.0
+    restart: unless-stopped
+    environment:
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD:-voltcart-local-only}
+      MYSQL_DATABASE: voltcart
+    volumes:
+      - dbdata:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-p${DB_PASSWORD:-voltcart-local-only}"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  app:
+    build: .
+    restart: unless-stopped
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "8080:8080"
+    environment:
+      ConnectionStrings__Default: "Server=db;Port=3306;Database=voltcart;User=root;Password=${DB_PASSWORD:-voltcart-local-only}"
+      Jwt__Key: ${JWT_KEY:-local-demo-only-change-me-0123456789abcdef-xyz}
+      Database__MigrateOnStartup: "true"
+      Seed__DemoData: "true"
+      Email__WebUrl: ${PUBLIC_URL:-http://localhost:8080}
+
+volumes:
+  dbdata:

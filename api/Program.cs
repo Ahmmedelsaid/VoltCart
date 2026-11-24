@@ -1,7 +1,10 @@
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -12,7 +15,35 @@ using VoltCart.Api.Models;
 using VoltCart.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+
+// منصات الاستضافة (Railway, Render...) بتقول لنا على أنهي port نسمع بمتغيّر PORT
+if (Environment.GetEnvironmentVariable("PORT") is { Length: > 0 } port)
+    builder.WebHost.UseUrls($"http://0.0.0.0:{port}");
+
 builder.Services.AddControllers();
+
+// ضغط (Brotli/Gzip) للـ JS والـ CSS والـ JSON: فرق كبير في السرعة على استضافة من غير CDN
+builder.Services.AddResponseCompression(options =>
+{
+    options.EnableForHttps = true;
+    options.MimeTypes = ResponseCompressionDefaults.MimeTypes.Concat([
+        "image/svg+xml",
+        "application/manifest+json",
+    ]);
+});
+
+// خلف reverse proxy (كل منصات الاستضافة): نثق في X-Forwarded-For/Proto عشان الـ HTTPS والـ IP الحقيقي
+// (rate limiting بيعتمد عليه) يبقوا صح. مقفول افتراضياً، وبيتفتح بـ Proxy__TrustForwardedHeaders=true.
+if (builder.Configuration.GetValue<bool>("Proxy:TrustForwardedHeaders"))
+{
+    builder.Services.Configure<ForwardedHeadersOptions>(options =>
+    {
+        options.ForwardedHeaders =
+            ForwardedHeaders.XForwardedFor | ForwardedHeaders.XForwardedProto;
+        options.KnownIPNetworks.Clear();
+        options.KnownProxies.Clear();
+    });
+}
 
 // أي خطأ غير متوقع يرجع بنفس الشكل (ProblemDetails) بدل stack trace
 builder.Services.AddProblemDetails();
@@ -154,14 +185,27 @@ builder.Services.AddAuthorization();
 var app = builder.Build();
 
 if (app.Environment.IsDevelopment())
-{
     app.MapOpenApi();
 
+// الاستضافة: Database__MigrateOnStartup=true بيطبّق الـ migrations لوحده (مفيش وصول للـ database من جهازك)،
+// و Seed__DemoData=true بيملا الكتالوج التجريبي (في Development بيتملا دايماً).
+var migrateOnStartup = app.Configuration.GetValue<bool>("Database:MigrateOnStartup");
+var seedDemoData =
+    app.Environment.IsDevelopment() || app.Configuration.GetValue<bool>("Seed:DemoData");
+if (migrateOnStartup || seedDemoData)
+{
     using var scope = app.Services.CreateScope();
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    var seeded = await DbSeeder.SeedAsync(db);
-    if (seeded > 0)
-        app.Logger.LogInformation("Seeded {Count} demo products", seeded);
+
+    if (migrateOnStartup)
+        await MigrateWithRetryAsync(db, app.Logger);
+
+    if (seedDemoData)
+    {
+        var seeded = await DbSeeder.SeedAsync(db);
+        if (seeded > 0)
+            app.Logger.LogInformation("Seeded {Count} demo products", seeded);
+    }
 }
 
 // أول Admin بيتعمل من الإعدادات (Seed:AdminEmail / Seed:AdminPassword) لو موجودة بس
@@ -175,6 +219,10 @@ using (var scope = app.Services.CreateScope())
     );
 }
 
+// لازم يبقى قبل أي حاجة بتقرا الـ scheme أو الـ IP
+if (app.Configuration.GetValue<bool>("Proxy:TrustForwardedHeaders"))
+    app.UseForwardedHeaders();
+
 // لازم أول حاجة في الـ pipeline عشان يمسك أي exception بعده
 app.UseExceptionHandler();
 
@@ -182,6 +230,32 @@ app.UseExceptionHandler();
 app.UseStatusCodePages();
 
 app.UseHttpsRedirection();
+
+// الموقع (Angular) بيتخدم من نفس الـ API لو الملفات موجودة في wwwroot (جوه الـ Docker image):
+// رابط واحد، ومفيش CORS، والـ cookie بتاع الـ refresh token first-party.
+var webRoot = app.Environment.WebRootPath;
+var serveWebsite = webRoot is not null && File.Exists(Path.Combine(webRoot, "index.html"));
+var staticFiles = new StaticFileOptions
+{
+    OnPrepareResponse = context =>
+    {
+        var name = context.File.Name;
+        context.Context.Response.Headers.CacheControl = name switch
+        {
+            // الصفحة الرئيسية دايماً تتجدد، عشان تشاور على آخر ملفات
+            "index.html" => "no-cache",
+            // main-AB12CD34.js : الاسم فيه hash، يتخزّن سنة
+            _ when HashedAsset().IsMatch(name) => "public,max-age=31536000,immutable",
+            _ => "public,max-age=86400",
+        };
+    },
+};
+if (serveWebsite)
+{
+    app.UseResponseCompression();
+    app.UseDefaultFiles();
+    app.UseStaticFiles(staticFiles);
+}
 
 // الترتيب مهم: CORS ثم Authentication (مين انت؟) ثم Authorization (مسموح لك؟)
 app.UseCors("Frontend");
@@ -193,4 +267,50 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+// فحص صحة بسيط (للمنصة وللـ uptime monitors): بيتأكد إن الـ database شغّالة
+app.MapGet("/api/health", async (AppDbContext db) =>
+    await db.Database.CanConnectAsync()
+        ? Results.Ok(new { status = "ok" })
+        : Results.Problem("The database is not reachable.", statusCode: 503)
+);
+
+if (serveWebsite)
+{
+    // أي /api/... مش موجود يرجّع 404 مش صفحة الموقع
+    app.MapFallback("/api/{**rest}", () => Results.NotFound());
+    // باقي الروابط (/products/5, /cart...) هي routes الـ Angular: نرجّع index.html
+    app.MapFallbackToFile("index.html", staticFiles);
+}
+
 app.Run();
+
+static async Task MigrateWithRetryAsync(AppDbContext db, ILogger logger)
+{
+    // الـ database ممكن تكون لسه بتقوم لما التطبيق يشتغل (docker compose / Railway)، فبنحاول كذا مرة
+    const int attempts = 10;
+    for (var attempt = 1; ; attempt++)
+    {
+        try
+        {
+            await db.Database.MigrateAsync();
+            return;
+        }
+        catch (Exception ex) when (attempt < attempts)
+        {
+            logger.LogWarning(
+                ex,
+                "Database not ready (attempt {Attempt} of {Max}), retrying in 3 seconds",
+                attempt,
+                attempts
+            );
+            await Task.Delay(TimeSpan.FromSeconds(3));
+        }
+    }
+}
+
+// الملفات اللي اسمها فيه hash من الـ Angular build: main-ABC123XY.js و chunk-... و styles-...
+internal partial class Program
+{
+    [GeneratedRegex(@"-[A-Z0-9]{8}\.(js|css)$")]
+    internal static partial Regex HashedAsset();
+}
