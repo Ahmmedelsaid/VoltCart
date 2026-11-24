@@ -5,51 +5,58 @@
 @import '@fontsource/ibm-plex-sans-arabic/600.css';
 @import '@fontsource/ibm-plex-sans-arabic/700.css';
 
-/* Volt Dark: كل الألوان هنا، والباقي بيستخدمها بالاسم (bg-surface, text-muted, border-border...) */
+/* Volt Light: كل الألوان هنا، والباقي بيستخدمها بالاسم (bg-surface, text-muted, border-border...) */
 @theme {
   --font-sans: 'IBM Plex Sans Arabic', ui-sans-serif, system-ui, sans-serif;
 
-  --color-bg: #0b0d12;
-  --color-surface: #141824;
-  --color-surface-2: #1b2133;
-  --color-fg: #f3f4f6;
-  --color-muted: #8b93a7;
-  --color-border: #232a3b;
-  --color-accent: #ffd60a;
-  --color-accent-fg: #111111;
-  --color-danger: #ff7b7b;
-  --color-success: #4ade80;
+  /* الصفحة والكروت */
+  --color-bg: #f4f6fa;
+  --color-surface: #ffffff;
+  --color-surface-2: #eef2f8;
+  --color-border: #e1e6ef;
 
-  /* لوح فاتح لصور المنتجات (أغلبها بخلفية بيضاء) عشان ما تبانش غريبة على الثيم الداكن */
-  --color-photo: #f1f3f6;
+  /* النص */
+  --color-fg: #0f172a;
+  --color-muted: #5b6678;
+
+  /* اللون الأساسي: أزرق كهربائي. accent-fg هو لون النص فوقه */
+  --color-accent: #2563eb;
+  --color-accent-hover: #1d4ed8;
+  --color-accent-soft: #e8efff;
+  --color-accent-fg: #ffffff;
+
+  /* لون دافي للخصومات والتنبيهات المهمة */
+  --color-highlight: #f59e0b;
+
+  --color-danger: #dc2626;
+  --color-success: #15803d;
+
+  /* الأزرق الغامق: الشريط العلوي والفوتر */
+  --color-ink: #0b1220;
+  --color-ink-2: #131c31;
+
+  /* لوح أبيض لصور المنتجات (أغلبها بخلفية بيضاء) */
+  --color-photo: #f6f8fb;
+
+  --shadow-card: 0 1px 2px rgb(15 23 42 / 0.05), 0 6px 18px -10px rgb(15 23 42 / 0.12);
+  --shadow-lift: 0 2px 4px rgb(15 23 42 / 0.05), 0 18px 36px -18px rgb(37 99 235 / 0.35);
 }
 
 @layer base {
   html {
-    color-scheme: dark;
-  }
-
-  html {
-    scrollbar-color: #2a3142 transparent;
+    color-scheme: light;
+    scrollbar-color: #c3cbdb transparent;
   }
 
   body {
     background-color: var(--color-bg);
-    /* وهج أصفر خفيف في أول الصفحة بيدّي عمق للثيم الداكن */
-    background-image: radial-gradient(
-      60rem 26rem at 50% -10rem,
-      rgb(255 214 10 / 0.07),
-      transparent 70%
-    );
-    background-repeat: no-repeat;
     color: var(--color-fg);
     font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
   }
 
   ::selection {
-    background: rgb(255 214 10 / 0.35);
-    color: #fff;
+    background: rgb(37 99 235 / 0.2);
   }
 
   :focus-visible {
@@ -60,38 +67,52 @@
 
 @layer components {
   .btn {
-    @apply inline-flex items-center justify-center gap-2 rounded-lg border border-border bg-surface px-3.5 py-2 text-sm font-medium text-fg transition hover:border-muted active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40;
+    @apply inline-flex items-center justify-center gap-2 rounded-lg border border-border bg-surface px-3.5 py-2 text-sm font-medium text-fg shadow-sm transition hover:border-accent/50 hover:text-accent active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-40;
   }
 
   .btn-accent {
-    @apply border-accent bg-accent text-accent-fg shadow-[0_8px_24px_-10px_rgb(255_214_10/0.55)] hover:border-accent hover:brightness-110;
+    @apply border-accent bg-accent text-accent-fg shadow-[0_8px_20px_-10px_rgb(37_99_235/0.7)] hover:border-accent-hover hover:bg-accent-hover hover:text-accent-fg;
   }
 
-  /* اختصارات التصنيفات في أول الصفحة */
+  /* اختصارات التصنيفات */
   .chip {
-    @apply inline-flex items-center gap-2 rounded-full border border-border bg-bg/60 px-3.5 py-1.5 text-sm text-fg backdrop-blur transition hover:border-accent/60;
+    @apply inline-flex items-center gap-2 rounded-full border border-border bg-surface px-3.5 py-1.5 text-sm text-fg shadow-sm transition hover:border-accent/60 hover:text-accent;
   }
 
   .chip-active {
-    @apply border-accent/70 bg-accent/15 text-accent;
+    @apply border-accent bg-accent text-accent-fg hover:text-accent-fg;
   }
 
   /* عدّاد المنتجات جنب اسم التصنيف أو الماركة */
   .count {
-    @apply rounded-full bg-bg/70 px-2 py-0.5 text-[11px] leading-none text-muted;
+    @apply rounded-full bg-surface-2 px-2 py-0.5 text-[11px] leading-none text-muted;
+  }
+
+  .chip-active .count {
+    @apply bg-white/20 text-accent-fg;
   }
 
   .field {
-    @apply w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-fg placeholder:text-muted;
+    @apply w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-fg transition placeholder:text-muted/80 focus:border-accent focus:outline-none focus:ring-2 focus:ring-accent/20;
+  }
+
+  /* كارت أبيض بحدود خفيفة وظل ناعم */
+  .card {
+    @apply rounded-2xl border border-border bg-surface shadow-card;
   }
 
   /* رقم الخطوة في صفحة إتمام الطلب */
   .step {
     @apply grid size-7 shrink-0 place-items-center rounded-full bg-accent text-sm font-bold text-accent-fg;
   }
+
+  /* عنوان قسم في الصفحة الرئيسية */
+  .section-title {
+    @apply text-xl font-bold tracking-tight sm:text-2xl;
+  }
 }
 
-/* الخريطة (Leaflet): بلاط OpenStreetMap فاتح، فبنقلبه عشان يليق على الثيم الداكن */
+/* الخريطة (Leaflet) */
 @layer components {
   .leaflet-container {
     font-family: var(--font-sans);
@@ -99,32 +120,9 @@
     outline-offset: 0;
   }
 
-  .leaflet-tile-pane {
-    filter: invert(1) hue-rotate(180deg) brightness(0.95) contrast(0.9) saturate(0.75);
-  }
-
   .leaflet-bar a,
   .leaflet-bar a:hover {
-    background-color: var(--color-surface);
     border-color: var(--color-border);
-    color: var(--color-fg);
-  }
-
-  .leaflet-bar a:hover {
-    background-color: var(--color-surface-2);
-  }
-
-  .leaflet-bar a.leaflet-disabled {
-    color: var(--color-muted);
-    background-color: var(--color-surface);
-  }
-
-  .leaflet-control-attribution {
-    background: rgb(11 13 18 / 0.75) !important;
-    color: var(--color-muted);
-  }
-
-  .leaflet-control-attribution a {
     color: var(--color-fg);
   }
 

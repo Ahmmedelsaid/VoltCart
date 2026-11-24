@@ -27,31 +27,21 @@ import { PAGE_SIZE, hasActiveFilters, isProductSort, toQuery, toUrlParams } from
   imports: [ProductCard, ProductFilters, Pagination, RouterLink, TranslocoPipe, Icon],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="mx-auto max-w-7xl px-4 py-8">
-      <header
-        class="relative isolate mb-8 overflow-hidden rounded-3xl border border-border bg-linear-to-br from-surface-2 via-surface to-bg px-6 py-8 sm:px-10 sm:py-12"
-      >
-        <div
-          aria-hidden="true"
-          class="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(38rem_16rem_at_85%_0%,rgb(255_214_10/0.16),transparent_70%)]"
-        ></div>
-        <app-icon
-          name="bolt"
-          [size]="16"
-          class="pointer-events-none absolute -end-6 -top-6 -z-10 text-accent opacity-[0.06]"
-        />
-        <p class="text-xs font-semibold uppercase tracking-[0.2em] text-accent">
-          {{ 'home.eyebrow' | transloco }}
-        </p>
-        <h1 class="mt-3 max-w-2xl text-3xl font-bold leading-tight tracking-tight sm:text-5xl">
-          {{ 'home.title' | transloco }}
-        </h1>
-        <p class="mt-3 max-w-xl text-muted sm:text-lg">{{ 'home.subtitle' | transloco }}</p>
+    <div class="mx-auto max-w-7xl px-4 py-6">
+      <header class="mb-6">
+        <div class="flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <h1 class="text-2xl font-bold tracking-tight sm:text-3xl">
+              {{ 'products.pageTitle' | transloco }}
+            </h1>
+            <p class="mt-1 text-sm text-muted">{{ 'home.subtitle' | transloco }}</p>
+          </div>
+        </div>
 
         @if (quickCategories().length) {
-          <nav class="mt-6 flex flex-wrap gap-2" [attr.aria-label]="'filters.category' | transloco">
+          <nav class="mt-4 flex flex-wrap gap-2" [attr.aria-label]="'filters.category' | transloco">
             <a
-              routerLink="/"
+              routerLink="/products"
               [queryParams]="{}"
               class="chip"
               [class.chip-active]="query().categoryId === undefined"
@@ -60,7 +50,7 @@ import { PAGE_SIZE, hasActiveFilters, isProductSort, toQuery, toUrlParams } from
             </a>
             @for (category of quickCategories(); track category.id) {
               <a
-                routerLink="/"
+                routerLink="/products"
                 [queryParams]="{ categoryId: category.id }"
                 class="chip"
                 [class.chip-active]="query().categoryId === category.id"
@@ -135,7 +125,7 @@ import { PAGE_SIZE, hasActiveFilters, isProductSort, toQuery, toUrlParams } from
                 }
               </div>
             } @else {
-              <ul class="grid grid-cols-1 gap-4 min-[480px]:grid-cols-2 xl:grid-cols-3">
+              <ul class="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3">
                 @for (product of current.data.items; track product.id) {
                   <li><app-product-card [product]="product" /></li>
                 }
@@ -160,14 +150,9 @@ import { PAGE_SIZE, hasActiveFilters, isProductSort, toQuery, toUrlParams } from
               </button>
             </div>
           } @else {
-            <ul
-              class="grid grid-cols-1 gap-4 min-[480px]:grid-cols-2 xl:grid-cols-3"
-              aria-hidden="true"
-            >
+            <ul class="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3" aria-hidden="true">
               @for (placeholder of skeletons; track placeholder) {
-                <li
-                  class="aspect-[4/5] animate-pulse rounded-2xl border border-border bg-surface"
-                ></li>
+                <li class="card aspect-[4/5] animate-pulse"></li>
               }
             </ul>
           }

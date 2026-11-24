@@ -20,7 +20,18 @@ export type IconName =
   | 'trash'
   | 'check'
   | 'pin'
-  | 'locate';
+  | 'locate'
+  | 'phone'
+  | 'laptop'
+  | 'headphones'
+  | 'plug'
+  | 'truck'
+  | 'shield'
+  | 'headset'
+  | 'cash'
+  | 'menu'
+  | 'mail'
+  | 'clock';
 
 /** أيقونات SVG بسيطة (stroke) بتاخد لون النص الحالي. الحجم بالـ rem. */
 @Component({
@@ -111,6 +122,53 @@ export type IconName =
         }
         @case ('check') {
           <path d="m5 12 5 5 9-10" />
+        }
+        @case ('phone') {
+          <rect x="7" y="2" width="10" height="20" rx="2" />
+          <path d="M11 18h2" />
+        }
+        @case ('laptop') {
+          <rect x="4" y="5" width="16" height="11" rx="1.5" />
+          <path d="M2 20h20" />
+        }
+        @case ('headphones') {
+          <path d="M4 15v-3a8 8 0 0 1 16 0v3" />
+          <rect x="2.5" y="14" width="4" height="6" rx="1.5" />
+          <rect x="17.5" y="14" width="4" height="6" rx="1.5" />
+        }
+        @case ('plug') {
+          <path d="M9 2v5M15 2v5M6 7h12v4a6 6 0 0 1-12 0zM12 17v5" />
+        }
+        @case ('truck') {
+          <path d="M2 6h11v10H2zM13 9h4l4 4v3h-8" />
+          <circle cx="6.5" cy="18" r="1.8" />
+          <circle cx="17.5" cy="18" r="1.8" />
+        }
+        @case ('shield') {
+          <path d="M12 3 4 6v6c0 5 3.4 8.4 8 9 4.6-.6 8-4 8-9V6z" />
+          <path d="m9 12 2 2 4-4" />
+        }
+        @case ('headset') {
+          <path d="M4 14v-2a8 8 0 0 1 16 0v2" />
+          <rect x="2.5" y="13" width="4" height="6" rx="1.5" />
+          <rect x="17.5" y="13" width="4" height="6" rx="1.5" />
+          <path d="M19.5 19c0 1.7-1.6 3-4 3h-2" />
+        }
+        @case ('cash') {
+          <rect x="2" y="6" width="20" height="12" rx="2" />
+          <circle cx="12" cy="12" r="2.5" />
+          <path d="M6 12h.01M18 12h.01" />
+        }
+        @case ('menu') {
+          <path d="M4 6h16M4 12h16M4 18h16" />
+        }
+        @case ('mail') {
+          <rect x="2" y="5" width="20" height="14" rx="2" />
+          <path d="m2 7 10 7 10-7" />
+        }
+        @case ('clock') {
+          <circle cx="12" cy="12" r="10" />
+          <path d="M12 6v6l4 2" />
         }
         @case ('pin') {
           <path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0z" />

@@ -45,7 +45,7 @@ import { LocationPicker } from '../../shared/ui/location-picker';
           >
             <app-icon name="cart" [size]="2.5" class="text-muted/60" />
             <h2 class="text-lg font-semibold">{{ 'cart.emptyTitle' | transloco }}</h2>
-            <a routerLink="/" class="btn btn-accent mt-1">{{
+            <a routerLink="/products" class="btn btn-accent mt-1">{{
               'account.startShopping' | transloco
             }}</a>
           </div>

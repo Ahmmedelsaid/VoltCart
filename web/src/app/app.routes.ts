@@ -5,6 +5,11 @@ export const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
+    loadComponent: () => import('./features/home/home').then((m) => m.Home),
+  },
+  {
+    path: 'products',
+    pathMatch: 'full',
     loadComponent: () =>
       import('./features/products/product-list/product-list').then((m) => m.ProductList),
   },

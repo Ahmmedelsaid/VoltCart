@@ -23,47 +23,53 @@ import { Toasts } from './shared/ui/toasts';
     </a>
     <app-header />
     <app-toasts />
-    <main id="main" class="min-h-[70vh]">
+    <main id="main" class="min-h-[70vh] pb-4">
       <router-outlet />
     </main>
 
-    <footer class="mt-20 border-t border-border">
+    <footer class="mt-16 bg-ink text-white/70">
       <div
-        class="mx-auto grid max-w-7xl gap-x-8 gap-y-10 px-4 py-12 grid-cols-2 lg:grid-cols-[1.6fr_1fr_1fr_1fr]"
+        class="mx-auto grid max-w-7xl grid-cols-2 gap-x-8 gap-y-10 px-4 py-12 lg:grid-cols-[1.6fr_1fr_1fr_1fr]"
       >
         <div class="col-span-2 max-w-xs lg:col-span-1">
-          <a routerLink="/" class="inline-flex items-center gap-2 text-xl font-bold" dir="ltr">
-            <app-icon name="bolt" [size]="1.4" class="text-accent" />
-            <span>Volt<span class="text-accent">Cart</span></span>
+          <a
+            routerLink="/"
+            class="inline-flex items-center gap-2 text-xl font-bold text-white"
+            dir="ltr"
+          >
+            <span class="grid size-9 place-items-center rounded-xl bg-accent text-accent-fg">
+              <app-icon name="bolt" [size]="1.3" />
+            </span>
+            <span>Volt<span class="text-highlight">Cart</span></span>
           </a>
-          <p class="mt-3 text-sm leading-relaxed text-muted/90">
+          <p class="mt-4 text-sm leading-relaxed">
             {{ 'footer.tagline' | transloco }}
           </p>
         </div>
 
         <div class="contents">
           <nav [attr.aria-label]="'footer.shop' | transloco">
-            <h2 class="mb-3 text-sm font-semibold">{{ 'footer.shop' | transloco }}</h2>
-            <ul class="space-y-2 text-sm text-fg/70">
+            <h2 class="mb-4 text-sm font-semibold text-white">{{ 'footer.shop' | transloco }}</h2>
+            <ul class="space-y-2.5 text-sm">
               <li>
-                <a routerLink="/" class="transition hover:text-accent">
+                <a routerLink="/products" class="transition hover:text-white">
                   {{ 'footer.allProducts' | transloco }}
                 </a>
               </li>
               <li>
                 <a
-                  routerLink="/"
+                  routerLink="/products"
                   [queryParams]="{ sort: 'newest' }"
-                  class="transition hover:text-accent"
+                  class="transition hover:text-white"
                 >
                   {{ 'sort.newest' | transloco }}
                 </a>
               </li>
               <li>
                 <a
-                  routerLink="/"
+                  routerLink="/products"
                   [queryParams]="{ sort: 'price_asc' }"
-                  class="transition hover:text-accent"
+                  class="transition hover:text-white"
                 >
                   {{ 'sort.price_asc' | transloco }}
                 </a>
@@ -72,14 +78,16 @@ import { Toasts } from './shared/ui/toasts';
           </nav>
 
           <nav [attr.aria-label]="'footer.categories' | transloco">
-            <h2 class="mb-3 text-sm font-semibold">{{ 'footer.categories' | transloco }}</h2>
-            <ul class="space-y-2 text-sm text-fg/70">
+            <h2 class="mb-4 text-sm font-semibold text-white">
+              {{ 'footer.categories' | transloco }}
+            </h2>
+            <ul class="space-y-2.5 text-sm">
               @for (category of categories(); track category.id) {
                 <li>
                   <a
-                    routerLink="/"
+                    routerLink="/products"
                     [queryParams]="{ categoryId: category.id }"
-                    class="transition hover:text-accent"
+                    class="transition hover:text-white"
                   >
                     {{ category.name }}
                   </a>
@@ -89,22 +97,29 @@ import { Toasts } from './shared/ui/toasts';
           </nav>
 
           <nav [attr.aria-label]="'footer.account' | transloco">
-            <h2 class="mb-3 text-sm font-semibold">{{ 'footer.account' | transloco }}</h2>
-            <ul class="space-y-2 text-sm text-fg/70">
+            <h2 class="mb-4 text-sm font-semibold text-white">
+              {{ 'footer.account' | transloco }}
+            </h2>
+            <ul class="space-y-2.5 text-sm">
               @if (auth.isAuthenticated()) {
                 <li>
-                  <a routerLink="/account" class="transition hover:text-accent">
+                  <a routerLink="/account" class="transition hover:text-white">
                     {{ 'account.title' | transloco }}
+                  </a>
+                </li>
+                <li>
+                  <a routerLink="/orders" class="transition hover:text-white">
+                    {{ 'orders.title' | transloco }}
                   </a>
                 </li>
               } @else {
                 <li>
-                  <a routerLink="/login" class="transition hover:text-accent">
+                  <a routerLink="/login" class="transition hover:text-white">
                     {{ 'auth.login.cta' | transloco }}
                   </a>
                 </li>
                 <li>
-                  <a routerLink="/register" class="transition hover:text-accent">
+                  <a routerLink="/register" class="transition hover:text-white">
                     {{ 'auth.register.cta' | transloco }}
                   </a>
                 </li>
@@ -114,7 +129,7 @@ import { Toasts } from './shared/ui/toasts';
         </div>
       </div>
 
-      <div class="border-t border-border py-4 text-center text-xs text-muted">
+      <div class="border-t border-white/10 py-5 text-center text-xs text-white/60">
         {{ 'footer.rights' | transloco: { year: year } }}
       </div>
     </footer>
