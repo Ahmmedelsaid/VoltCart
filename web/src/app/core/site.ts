@@ -1,22 +1,46 @@
 import { InjectionToken } from '@angular/core';
 
+/** نص بلغتين (الموقع عربي وإنجليزي). فاضي = الحقل مش بيظهر. */
+export interface LocalizedText {
+  ar: string;
+  en: string;
+}
+
 /**
- * بيانات التواصل المعروضة في الموقع (صفحة "اتصل بنا").
- * دي قيم تجريبية: بدّلها بالأرقام والعناوين الحقيقية قبل ما الموقع يتنشر.
- * (النصوص المترجمة زي العنوان ومواعيد العمل في public/i18n تحت contact.info)
+ * بيانات التواصل اللي بتظهر في صفحة "اتصل بنا". كل حقل فاضي بيتخفّى من الصفحة،
+ * عشان ما نعرضش بيانات وهمية. املاها ببيانات المتجر الحقيقية قبل ما الموقع يتنشر.
  */
-export const SITE = {
-  name: 'VoltCart',
-  email: 'support@voltcart.example',
-  phone: '+20 100 000 0000',
+export interface SiteInfo {
+  name: string;
+  /** إيميل الدعم اللي يظهر للزوّار (مش بالضرورة إيميل استلام الرسايل). */
+  email: string;
+  /** تليفون المتجر زي ما تحب يظهر، مثلاً +20 100 123 4567. */
+  phone: string;
   /**
    * رقم واتساب المتجر بالصيغة الدولية من غير + أو مسافات (مثلاً 201012345678).
-   * فاضي = زرار "ابعت الطلب على واتساب" مخفي.
+   * بيفعّل كارت "كلّمنا على واتساب" وزرار "ابعت طلبي على واتساب".
    */
-  whatsapp: '',
-} as const;
+  whatsapp: string;
+  address: LocalizedText;
+  hours: LocalizedText;
+}
 
-/** رقم واتساب المتجر كـ token، عشان الاختبارات تقدر تبدّله من غير mock للملف. */
+export const SITE: SiteInfo = {
+  name: 'VoltCart',
+  email: '',
+  phone: '',
+  whatsapp: '',
+  address: { ar: '', en: '' },
+  hours: { ar: '', en: '' },
+};
+
+/** نفس البيانات كـ token، عشان الاختبارات تبدّلها من غير mock للملف. */
+export const SITE_INFO = new InjectionToken<SiteInfo>('SITE_INFO', {
+  providedIn: 'root',
+  factory: () => SITE,
+});
+
+/** رقم واتساب المتجر كـ token (بيستخدمه زرار الطلب كمان). */
 export const SHOP_WHATSAPP = new InjectionToken<string>('SHOP_WHATSAPP', {
   providedIn: 'root',
   factory: () => SITE.whatsapp,

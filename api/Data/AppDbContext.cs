@@ -70,6 +70,7 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
             entity.Property(m => m.Phone).HasMaxLength(20);
             entity.Property(m => m.Subject).HasMaxLength(150);
             entity.Property(m => m.Message).HasMaxLength(2000);
+            entity.Property(m => m.Topic).HasMaxLength(20);
 
             // الأحدث أولاً لما الفريق يقرا الرسايل
             entity.HasIndex(m => m.CreatedAt);

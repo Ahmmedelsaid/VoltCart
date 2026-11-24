@@ -9,6 +9,9 @@ public record CreateContactMessageDto(
         string? Phone,
     [Required, StringLength(150, MinimumLength = 3)] string Subject,
     [Required, StringLength(2000, MinimumLength = 10)] string Message,
+    [RegularExpression("^(product|order|complaint|other)$", ErrorMessage = "Unknown topic.")]
+        string? Topic = null,
+    [Range(1, 99_999_999)] int? OrderNumber = null,
     // خانة مخفية في الفورم: الناس ما بتملاهاش، فلو اتملت يبقى بوت
     string? Website = null
 );

@@ -10,6 +10,10 @@ export interface ContactRequest {
   phone: string | null;
   subject: string;
   message: string;
+  /** product | order | complaint | other */
+  topic: string;
+  /** رقم طلب ذكره العميل (اختياري). */
+  orderNumber: number | null;
   /** خانة مخفية (honeypot): لازم تفضل فاضية. */
   website: string;
 }

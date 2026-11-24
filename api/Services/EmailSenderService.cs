@@ -62,7 +62,12 @@ public sealed class EmailSenderService(
         if (message.ReplyTo is not null)
             mime.ReplyTo.Add(MailboxAddress.Parse(message.ReplyTo));
         mime.Subject = message.Subject;
-        mime.Body = new TextPart("plain") { Text = message.Body };
+        // نص + HTML في نفس الرسالة (multipart/alternative): العميل بيعرض الأنسب
+        mime.Body = new BodyBuilder
+        {
+            TextBody = message.Body,
+            HtmlBody = message.Html,
+        }.ToMessageBody();
 
         using var client = settings.LogProtocol
             ? new SmtpClient(new ProtocolLogger(Console.OpenStandardError())) { Timeout = 20_000 }
