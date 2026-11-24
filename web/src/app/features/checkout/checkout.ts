@@ -305,8 +305,8 @@ import { LocationPicker } from '../../shared/ui/location-picker';
         }
       } @else {
         <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_24rem]" aria-hidden="true">
-          <div class="h-96 animate-pulse rounded-2xl border border-border bg-surface"></div>
-          <div class="h-72 animate-pulse rounded-2xl border border-border bg-surface"></div>
+          <div class="h-96 skeleton rounded-2xl border border-border"></div>
+          <div class="h-72 skeleton rounded-2xl border border-border"></div>
         </div>
       }
     </div>

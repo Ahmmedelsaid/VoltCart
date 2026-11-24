@@ -16,6 +16,7 @@ import { CatalogService } from '../../../core/services/catalog.service';
 import { ProductsService } from '../../../core/services/products.service';
 import { errorMessageKey } from '../../../core/state/error-message';
 import { LoadState, toLoadState } from '../../../core/state/load-state';
+import { Reveal } from '../../../shared/directives/reveal';
 import { Icon } from '../../../shared/ui/icon';
 import { Pagination } from '../pagination/pagination';
 import { ProductCard } from '../product-card/product-card';
@@ -24,7 +25,7 @@ import { PAGE_SIZE, hasActiveFilters, isProductSort, toQuery, toUrlParams } from
 
 @Component({
   selector: 'app-product-list',
-  imports: [ProductCard, ProductFilters, Pagination, RouterLink, TranslocoPipe, Icon],
+  imports: [ProductCard, ProductFilters, Pagination, RouterLink, TranslocoPipe, Icon, Reveal],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="mx-auto max-w-7xl px-4 py-6">
@@ -126,8 +127,8 @@ import { PAGE_SIZE, hasActiveFilters, isProductSort, toQuery, toUrlParams } from
               </div>
             } @else {
               <ul class="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3">
-                @for (product of current.data.items; track product.id) {
-                  <li><app-product-card [product]="product" /></li>
+                @for (product of current.data.items; track product.id; let i = $index) {
+                  <li [appReveal]="(i % 3) * 70"><app-product-card [product]="product" /></li>
                 }
               </ul>
               <div class="mt-8">
@@ -152,7 +153,7 @@ import { PAGE_SIZE, hasActiveFilters, isProductSort, toQuery, toUrlParams } from
           } @else {
             <ul class="grid grid-cols-2 gap-3 sm:gap-4 lg:grid-cols-3" aria-hidden="true">
               @for (placeholder of skeletons; track placeholder) {
-                <li class="card aspect-[4/5] animate-pulse"></li>
+                <li class="card skeleton aspect-[4/5]"></li>
               }
             </ul>
           }

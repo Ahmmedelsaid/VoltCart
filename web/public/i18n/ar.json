@@ -36,6 +36,11 @@
         "title": "دعم ودود",
         "text": "بنرد عليك بالتليفون والرسائل."
       }
+    },
+    "stats": {
+      "products": "منتج",
+      "categories": "قسم",
+      "governorates": "محافظة"
     }
   },
   "footer": {

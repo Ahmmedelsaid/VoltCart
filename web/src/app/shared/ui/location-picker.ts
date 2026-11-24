@@ -52,9 +52,7 @@ const ATTRIBUTION =
         ></div>
 
         @if (!ready()) {
-          <div
-            class="absolute inset-0 z-[500] grid animate-pulse place-items-center bg-surface-2 text-sm text-muted"
-          >
+          <div class="absolute inset-0 z-[500] grid skeleton place-items-center text-sm text-muted">
             {{ 'checkout.map.loading' | transloco }}
           </div>
         }

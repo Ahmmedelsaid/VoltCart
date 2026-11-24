@@ -170,8 +170,8 @@ import { OrderStatusBadge } from '../../shared/ui/order-status';
         </div>
       } @else {
         <div class="grid gap-4" aria-hidden="true">
-          <div class="h-10 w-64 animate-pulse rounded bg-surface"></div>
-          <div class="h-40 animate-pulse rounded-2xl bg-surface"></div>
+          <div class="h-10 w-64 skeleton rounded"></div>
+          <div class="h-40 skeleton rounded-2xl"></div>
         </div>
       }
     </div>

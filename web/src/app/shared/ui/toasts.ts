@@ -16,7 +16,7 @@ import { Icon } from './icon';
     >
       @for (toast of toastService.toasts(); track toast.id) {
         <div
-          class="pointer-events-auto flex items-center gap-3 rounded-xl border bg-surface-2 px-4 py-3 text-sm shadow-xl"
+          class="animate-slide-up pointer-events-auto flex items-center gap-3 rounded-xl border bg-surface-2 px-4 py-3 text-sm shadow-xl"
           [class.border-success]="toast.kind === 'success'"
           [class.border-danger]="toast.kind === 'error'"
           [attr.role]="toast.kind === 'error' ? 'alert' : 'status'"
