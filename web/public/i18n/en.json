@@ -44,7 +44,10 @@
     "shop": "Shop",
     "allProducts": "All products",
     "categories": "Categories",
-    "account": "Account"
+    "account": "Account",
+    "company": "VoltCart",
+    "about": "About us",
+    "contact": "Contact us"
   },
   "auth": {
     "login": {
@@ -282,5 +285,101 @@
     "promo": "Cash on delivery across Egypt",
     "allProducts": "All products",
     "searchLabel": "Search products"
+  },
+  "about": {
+    "eyebrow": "About us",
+    "title": "Your electronics store, made simple",
+    "subtitle": "VoltCart brings phones, laptops, audio, gaming and more to your door anywhere in Egypt, with honest prices and support you can actually reach.",
+    "storyTitle": "Our story",
+    "story1": "We started VoltCart because buying electronics should not feel like a gamble. Too often the price is unclear, the product is not what you expected, and nobody answers when something goes wrong.",
+    "story2": "So we keep things simple: clear prices in Egyptian pounds, genuine products from brands you know, delivery to every governorate and payment only when your order arrives.",
+    "stats": {
+      "products": "Products",
+      "categories": "Categories",
+      "governorates": "Governorates we deliver to"
+    },
+    "valuesTitle": "What we stand for",
+    "values": {
+      "genuine": {
+        "title": "Genuine products",
+        "text": "We list authentic items from trusted brands, with clear specifications."
+      },
+      "prices": {
+        "title": "Clear prices",
+        "text": "The price you see is the price you pay. No hidden fees at checkout."
+      },
+      "delivery": {
+        "title": "Delivery everywhere",
+        "text": "We deliver to all 27 governorates and we call you to arrange the time."
+      },
+      "support": {
+        "title": "Support that answers",
+        "text": "Questions before or after your order? Talk to a real person."
+      }
+    },
+    "stepsTitle": "How ordering works",
+    "steps": {
+      "choose": {
+        "title": "Choose",
+        "text": "Browse the catalogue and add what you like to your cart."
+      },
+      "order": {
+        "title": "Order",
+        "text": "Enter your delivery details and drop a pin on the map. No card needed."
+      },
+      "receive": {
+        "title": "Receive and pay",
+        "text": "We deliver to your door and you pay in cash when it arrives."
+      }
+    },
+    "ctaTitle": "Ready to find your next device?",
+    "ctaText": "Have a question first? We are happy to help.",
+    "shop": "Start shopping",
+    "contact": "Contact us"
+  },
+  "contact": {
+    "eyebrow": "Contact us",
+    "title": "We would love to hear from you",
+    "subtitle": "Ask about a product, an order or anything else. We usually reply within one working day.",
+    "info": {
+      "phone": "Phone",
+      "email": "Email",
+      "address": "Address",
+      "addressValue": "Cairo, Egypt",
+      "hours": "Working hours",
+      "hoursValue": "Saturday to Thursday, 10 AM to 8 PM"
+    },
+    "form": {
+      "title": "Send us a message",
+      "name": "Your name",
+      "email": "Email",
+      "phone": "Phone number",
+      "subject": "Subject",
+      "message": "Message",
+      "optional": "optional",
+      "send": "Send message",
+      "sending": "Sending…",
+      "counter": "{{count}} / {{max}}"
+    },
+    "validation": {
+      "nameRequired": "Please enter your name.",
+      "nameShort": "The name must be at least 2 characters.",
+      "emailRequired": "Please enter your email.",
+      "emailInvalid": "Enter a valid email address.",
+      "phoneInvalid": "Enter a valid phone number, like +20 100 123 4567.",
+      "subjectRequired": "Please add a subject.",
+      "subjectShort": "The subject must be at least 3 characters.",
+      "messageRequired": "Please write your message.",
+      "messageShort": "Please write at least 10 characters."
+    },
+    "success": {
+      "title": "Message sent",
+      "text": "Thank you for reaching out. We will reply to your email soon.",
+      "again": "Send another message"
+    },
+    "errors": {
+      "invalid": "Some details are not valid. Please check the form.",
+      "tooMany": "You have sent too many messages. Please try again in a few minutes."
+    }
   }
 }

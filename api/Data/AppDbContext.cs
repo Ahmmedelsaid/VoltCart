@@ -23,6 +23,8 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
 
     public DbSet<OrderItem> OrderItems => Set<OrderItem>();
 
+    public DbSet<ContactMessage> ContactMessages => Set<ContactMessage>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
@@ -59,6 +61,18 @@ public class AppDbContext(DbContextOptions<AppDbContext> options) : DbContext(op
                 .WithMany()
                 .HasForeignKey(c => c.ProductId)
                 .OnDelete(DeleteBehavior.Cascade);
+        });
+
+        modelBuilder.Entity<ContactMessage>(entity =>
+        {
+            entity.Property(m => m.Name).HasMaxLength(100);
+            entity.Property(m => m.Email).HasMaxLength(254);
+            entity.Property(m => m.Phone).HasMaxLength(20);
+            entity.Property(m => m.Subject).HasMaxLength(150);
+            entity.Property(m => m.Message).HasMaxLength(2000);
+
+            // الأحدث أولاً لما الفريق يقرا الرسايل
+            entity.HasIndex(m => m.CreatedAt);
         });
 
         modelBuilder.Entity<Order>(entity =>
