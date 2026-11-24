@@ -89,6 +89,14 @@ dotnet user-secrets set "Seed:AdminEmail" "admin@example.com" --project api
 dotnet user-secrets set "Seed:AdminPassword" "<a strong password>" --project api
 ```
 
+### Run everything with Docker
+
+```bash
+docker compose up --build      # site + API + MySQL with demo data, then open http://localhost:8080
+```
+
+Deploying it? See [docs/DEPLOY.md](docs/DEPLOY.md) (one Docker image, Railway / Render / any VPS).
+
 ### Tests
 
 ```bash

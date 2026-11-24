@@ -21,3 +21,6 @@ dist/
 .idea/
 Thumbs.db
 .DS_Store
+
+# the example env file is meant to be committed
+!.env.example
