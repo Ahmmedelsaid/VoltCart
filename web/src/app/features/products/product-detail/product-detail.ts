@@ -158,12 +158,12 @@ const LOW_STOCK_THRESHOLD = 10;
         </div>
       } @else {
         <div class="grid gap-8 lg:grid-cols-2" aria-hidden="true">
-          <div class="aspect-square animate-pulse rounded-3xl bg-surface"></div>
+          <div class="aspect-square skeleton rounded-3xl"></div>
           <div class="space-y-4">
-            <div class="h-4 w-24 animate-pulse rounded bg-surface"></div>
-            <div class="h-9 w-3/4 animate-pulse rounded bg-surface"></div>
-            <div class="h-9 w-40 animate-pulse rounded bg-surface"></div>
-            <div class="h-32 animate-pulse rounded bg-surface"></div>
+            <div class="h-4 w-24 skeleton rounded"></div>
+            <div class="h-9 w-3/4 skeleton rounded"></div>
+            <div class="h-9 w-40 skeleton rounded"></div>
+            <div class="h-32 skeleton rounded"></div>
           </div>
         </div>
       }

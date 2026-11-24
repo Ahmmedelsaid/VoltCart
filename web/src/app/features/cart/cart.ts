@@ -171,10 +171,10 @@ import { Icon } from '../../shared/ui/icon';
         <div class="grid gap-4 lg:grid-cols-[minmax(0,1fr)_22rem]" aria-hidden="true">
           <div class="space-y-3">
             @for (placeholder of skeletons; track placeholder) {
-              <div class="h-36 animate-pulse rounded-2xl border border-border bg-surface"></div>
+              <div class="h-36 skeleton rounded-2xl border border-border"></div>
             }
           </div>
-          <div class="h-56 animate-pulse rounded-2xl border border-border bg-surface"></div>
+          <div class="h-56 skeleton rounded-2xl border border-border"></div>
         </div>
       }
     </div>

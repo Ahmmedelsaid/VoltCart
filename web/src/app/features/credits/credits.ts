@@ -25,7 +25,7 @@ interface PhotoCredit {
 
       @let list = credits();
       @if (list === null) {
-        <div class="card mt-6 h-64 animate-pulse" aria-hidden="true"></div>
+        <div class="card mt-6 h-64 skeleton" aria-hidden="true"></div>
       } @else if (list.length === 0) {
         <p class="card mt-6 p-6 text-muted">{{ 'credits.empty' | transloco }}</p>
       } @else {

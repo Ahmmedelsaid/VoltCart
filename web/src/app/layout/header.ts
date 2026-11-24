@@ -1,4 +1,14 @@
-import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  DestroyRef,
+  afterNextRender,
+  computed,
+  effect,
+  inject,
+  signal,
+  untracked,
+} from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { Router, RouterLink, RouterLinkActive } from '@angular/router';
 import { TranslocoPipe } from '@jsverse/transloco';
@@ -35,14 +45,27 @@ import { Icon } from '../shared/ui/icon';
       </div>
     </div>
 
-    <header class="sticky top-0 z-30 border-b border-border bg-surface/95 shadow-sm backdrop-blur">
-      <div class="mx-auto flex max-w-7xl flex-wrap items-center gap-x-4 gap-y-2 px-4 py-3">
+    <div class="scroll-progress" aria-hidden="true"></div>
+
+    <header
+      class="sticky top-0 z-30 border-b border-border bg-surface/80 backdrop-blur-xl backdrop-saturate-150 transition-shadow duration-300"
+      [class.shadow-md]="scrolled()"
+      [class.shadow-none]="!scrolled()"
+      style="view-transition-name: site-header"
+    >
+      <div
+        class="mx-auto flex max-w-7xl flex-wrap items-center gap-x-4 gap-y-2 px-4 transition-[padding] duration-300"
+        [class.py-3]="!scrolled()"
+        [class.py-2]="scrolled()"
+      >
         <a
           routerLink="/"
-          class="flex items-center gap-2 text-2xl font-bold tracking-tight"
+          class="group flex items-center gap-2 text-2xl font-bold tracking-tight"
           dir="ltr"
         >
-          <span class="grid size-9 place-items-center rounded-xl bg-accent text-accent-fg">
+          <span
+            class="grid size-9 place-items-center rounded-xl bg-linear-to-br from-[#3b82f6] to-accent-hover text-accent-fg shadow-[0_8px_18px_-8px_rgb(37_99_235/0.8)] transition duration-300 group-hover:rotate-[-8deg] group-hover:scale-110"
+          >
             <app-icon name="bolt" [size]="1.3" />
           </span>
           <span>Volt<span class="text-accent">Cart</span></span>
@@ -62,7 +85,7 @@ import { Icon } from '../shared/ui/icon';
             #q
             type="search"
             name="q"
-            class="field !rounded-full !bg-surface-2 !ps-11 !py-2.5"
+            class="field !rounded-full !bg-surface-2 !ps-11 !py-2.5 focus:!bg-surface focus:shadow-glow"
             [placeholder]="'filters.searchPlaceholder' | transloco"
             [attr.aria-label]="'header.searchLabel' | transloco"
           />
@@ -79,6 +102,7 @@ import { Icon } from '../shared/ui/icon';
             @if (cart.count() > 0) {
               <span
                 class="absolute -end-1.5 -top-1.5 grid min-w-5 place-items-center rounded-full bg-highlight px-1 text-[11px] font-bold leading-5 text-ink"
+                [class.animate-bump]="bump()"
               >
                 {{ cart.count() }}
               </span>
@@ -135,7 +159,7 @@ import { Icon } from '../shared/ui/icon';
               <a
                 routerLink="/products"
                 [queryParams]="{ categoryId: category.id }"
-                class="block whitespace-nowrap rounded-lg px-3 py-1.5 text-fg/80 transition hover:bg-surface-2 hover:text-accent"
+                class="nav-link block whitespace-nowrap rounded-lg px-3 py-1.5 text-fg/80 transition hover:text-accent"
               >
                 {{ category.name }}
               </a>
@@ -145,7 +169,7 @@ import { Icon } from '../shared/ui/icon';
             <a
               routerLink="/products"
               [queryParams]="{ sort: 'newest' }"
-              class="block whitespace-nowrap rounded-lg px-3 py-1.5 text-highlight-strong transition hover:bg-surface-2"
+              class="nav-link block whitespace-nowrap rounded-lg px-3 py-1.5 text-highlight-strong transition"
             >
               {{ 'home.newArrivals' | transloco }}
             </a>
@@ -162,6 +186,36 @@ export class Header {
   private readonly router = inject(Router);
 
   protected readonly initial = initialOf;
+
+  /** نزلنا شوية: الهيدر بيصغّر ويظهر ظل. */
+  protected readonly scrolled = signal(false);
+  /** عدّاد السلة بينبض لما يزيد. */
+  protected readonly bump = signal(false);
+  private previousCount: number | null = null;
+
+  constructor() {
+    const destroyRef = inject(DestroyRef);
+
+    afterNextRender(() => {
+      const onScroll = () => this.scrolled.set(window.scrollY > 24);
+      onScroll();
+      window.addEventListener('scroll', onScroll, { passive: true });
+      destroyRef.onDestroy(() => window.removeEventListener('scroll', onScroll));
+    });
+
+    effect(() => {
+      const loaded = this.cart.cart() !== null;
+      const count = this.cart.count();
+      untracked(() => {
+        // تحميل السلة بعد الدخول مش إضافة، فننبّض بس لما العدد يزيد والسلة محمّلة قبلها
+        if (loaded && this.previousCount !== null && count > this.previousCount) {
+          this.bump.set(true);
+          setTimeout(() => this.bump.set(false), 500);
+        }
+        this.previousCount = loaded ? count : null;
+      });
+    });
+  }
 
   private readonly allCategories = toSignal(
     inject(CatalogService).categories$.pipe(catchError(() => of<Category[]>([]))),

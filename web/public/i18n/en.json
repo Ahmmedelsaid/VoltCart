@@ -36,6 +36,11 @@
         "title": "Friendly support",
         "text": "We answer by phone and message."
       }
+    },
+    "stats": {
+      "products": "Products",
+      "categories": "Categories",
+      "governorates": "Governorates"
     }
   },
   "footer": {
