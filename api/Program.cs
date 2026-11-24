@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using VoltCart.Api.Controllers;
 using VoltCart.Api.Data;
 using VoltCart.Api.Infrastructure;
 using VoltCart.Api.Models;
@@ -24,6 +25,14 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 );
 
 builder.Services.AddOpenApi();
+builder.Services.AddMemoryCache();
+builder.Services.AddHttpClient(GeocodeController.ClientName, client =>
+{
+    client.BaseAddress = new Uri("https://nominatim.openstreetmap.org/");
+    client.Timeout = TimeSpan.FromSeconds(5);
+    // Nominatim بيطلب User-Agent يعرّف التطبيق
+    client.DefaultRequestHeaders.UserAgent.ParseAdd("VoltCart/1.0");
+});
 
 // CORS: المتصفح بيمنع الـ Angular (localhost:4200) يكلّم الـ API (localhost:5034)
 // لأن الـ origin مختلف. هنا بنسمح بالـ origins اللي في appsettings بس.
@@ -56,6 +65,20 @@ builder.Services.AddRateLimiter(options =>
 
         return ValueTask.CompletedTask;
     };
+    // اقتراح العنوان من الدبوس: بيكلّم خدمة برّة، فبنحدّه لكل مستخدم
+    options.AddPolicy("geocode", httpContext =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            httpContext.User.FindFirst("sub")?.Value
+                ?? httpContext.Connection.RemoteIpAddress?.ToString()
+                ?? "unknown",
+            _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 20,
+                Window = TimeSpan.FromMinutes(1),
+                QueueLimit = 0,
+            }
+        )
+    );
     options.AddPolicy("auth", httpContext =>
         RateLimitPartition.GetFixedWindowLimiter(
             httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",

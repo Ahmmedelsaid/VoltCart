@@ -18,7 +18,9 @@ export type IconName =
   | 'plus'
   | 'minus'
   | 'trash'
-  | 'check';
+  | 'check'
+  | 'pin'
+  | 'locate';
 
 /** أيقونات SVG بسيطة (stroke) بتاخد لون النص الحالي. الحجم بالـ rem. */
 @Component({
@@ -109,6 +111,15 @@ export type IconName =
         }
         @case ('check') {
           <path d="m5 12 5 5 9-10" />
+        }
+        @case ('pin') {
+          <path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0z" />
+          <circle cx="12" cy="10" r="3" />
+        }
+        @case ('locate') {
+          <circle cx="12" cy="12" r="7" />
+          <circle cx="12" cy="12" r="2" />
+          <path d="M12 2v3M12 19v3M2 12h3M19 12h3" />
         }
       }
     </svg>

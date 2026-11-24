@@ -101,6 +101,17 @@ import { OrderStatusBadge } from '../../shared/ui/order-status';
               @if (order.notes) {
                 <p class="text-sm text-muted">{{ order.notes }}</p>
               }
+              @if (order.latitude !== null && order.longitude !== null) {
+                <a
+                  class="mt-1 inline-flex items-center gap-1.5 text-sm font-medium text-accent hover:underline"
+                  target="_blank"
+                  rel="noopener"
+                  [href]="mapUrl(order.latitude, order.longitude)"
+                >
+                  <app-icon name="pin" [size]="1" />
+                  {{ 'orders.viewOnMap' | transloco }}
+                </a>
+              }
             </section>
 
             <section class="grid gap-2 rounded-2xl border border-border bg-surface/60 p-5">
@@ -200,6 +211,10 @@ export class OrderDetail {
     const current = this.state();
     return current.status === 'error' ? orderErrorKey(current.error) : '';
   });
+
+  protected mapUrl(lat: number, lng: number): string {
+    return `https://www.openstreetmap.org/?mlat=${lat}&mlon=${lng}#map=17/${lat}/${lng}`;
+  }
 
   protected cancel(order: Order): void {
     this.cancelling.set(true);

@@ -12,7 +12,9 @@ public record PlaceOrderDto(
         string Phone,
     [Required, StringLength(300, MinimumLength = 5)] string Address,
     [Required, StringLength(100, MinimumLength = 2)] string City,
-    [StringLength(500)] string? Notes
+    [StringLength(500)] string? Notes,
+    [Range(-90, 90)] double? Latitude = null,
+    [Range(-180, 180)] double? Longitude = null
 );
 
 public record OrderItemDto(
@@ -36,6 +38,8 @@ public record OrderDto(
     string Address,
     string City,
     string? Notes,
+    double? Latitude,
+    double? Longitude,
     IReadOnlyList<OrderItemDto> Items
 )
 {
@@ -52,6 +56,8 @@ public record OrderDto(
             order.Address,
             order.City,
             order.Notes,
+            order.Latitude,
+            order.Longitude,
             [
                 .. order.Items.Select(i => new OrderItemDto(
                     i.ProductId,

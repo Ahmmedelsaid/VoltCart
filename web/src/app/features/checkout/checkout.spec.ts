@@ -1,6 +1,7 @@
 import { provideHttpClient } from '@angular/common/http';
 import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { TestBed } from '@angular/core/testing';
+import { By } from '@angular/platform-browser';
 import { Router, provideRouter } from '@angular/router';
 import { provideTransloco, TranslocoLoader } from '@jsverse/transloco';
 import { of } from 'rxjs';
@@ -8,6 +9,7 @@ import { environment } from '../../../environments/environment';
 import { AuthResponse } from '../../core/auth/auth.models';
 import { AuthService } from '../../core/auth/auth.service';
 import { Cart } from '../../core/cart/cart.models';
+import { LocationPicker } from '../../shared/ui/location-picker';
 import { Checkout } from './checkout';
 
 class EmptyLoader implements TranslocoLoader {
@@ -88,7 +90,8 @@ describe('Checkout page', () => {
   function fill(element: HTMLElement, id: string, value: string): void {
     const input = element.querySelector<HTMLInputElement>(`#${id}`)!;
     input.value = value;
-    input.dispatchEvent(new Event('input'));
+    // الـ select بيسمع على change، والباقي على input
+    input.dispatchEvent(new Event(input instanceof HTMLSelectElement ? 'change' : 'input'));
   }
 
   it('prefills the recipient name from the account', async () => {
@@ -133,12 +136,63 @@ describe('Checkout page', () => {
       address: '12 Nile St',
       city: 'Giza',
       notes: null,
+      latitude: null,
+      longitude: null,
     });
     post.flush({ id: 9 });
     http.expectOne(`${API}/cart`).flush({ items: [], itemCount: 0, subtotal: 0 });
     await fixture.whenStable();
 
     expect(router.navigate).toHaveBeenCalledWith(['/orders', 9], { queryParams: { placed: 1 } });
+  });
+
+  it('fills the governorate and address from a pin, and sends the pin with the order', async () => {
+    const { fixture, element } = await render();
+    fill(element, 'co-phone', '+20 100 123 4567');
+
+    const picker = fixture.debugElement.query(By.directive(LocationPicker));
+    // الـ picker الحقيقي بيحط الدبوس وبعدين يبلّغ
+    picker.componentInstance.position.set({ lat: 30.0131, lng: 31.2089 });
+    picker.componentInstance.picked.emit({ lat: 30.0131, lng: 31.2089 });
+
+    const lookup = http.expectOne((r) => r.url === `${API}/geocode/reverse`);
+    expect(lookup.request.params.get('lat')).toBe('30.0131');
+    expect(lookup.request.params.get('lng')).toBe('31.2089');
+    lookup.flush({ address: '12 Nile St, Dokki', state: 'Giza Governorate' });
+    await fixture.whenStable();
+
+    expect(element.querySelector<HTMLSelectElement>('#co-city')!.value).toBe('Giza');
+    expect(element.querySelector<HTMLTextAreaElement>('#co-address')!.value).toBe(
+      '12 Nile St, Dokki',
+    );
+
+    element.querySelector<HTMLFormElement>('form')!.dispatchEvent(new Event('submit'));
+    const post = http.expectOne(`${API}/orders`);
+    expect(post.request.body).toMatchObject({
+      city: 'Giza',
+      address: '12 Nile St, Dokki',
+    });
+    expect(post.request.body.latitude).toBeCloseTo(30.0131);
+    expect(post.request.body.longitude).toBeCloseTo(31.2089);
+    post.flush({ id: 9 });
+    http.expectOne(`${API}/cart`).flush({ items: [], itemCount: 0, subtotal: 0 });
+  });
+
+  it('keeps an address the customer typed when a pin is dropped', async () => {
+    const { fixture, element } = await render();
+    fill(element, 'co-address', 'My own address 5');
+
+    const picker = fixture.debugElement.query(By.directive(LocationPicker));
+    picker.componentInstance.picked.emit({ lat: 30.0444, lng: 31.2357 });
+    http
+      .expectOne((r) => r.url === `${API}/geocode/reverse`)
+      .flush({ address: 'Somewhere else', state: 'Cairo Governorate' });
+    await fixture.whenStable();
+
+    expect(element.querySelector<HTMLTextAreaElement>('#co-address')!.value).toBe(
+      'My own address 5',
+    );
+    expect(element.querySelector<HTMLSelectElement>('#co-city')!.value).toBe('Cairo');
   });
 
   it('shows the stock message and reloads the cart when the API refuses with 409', async () => {
