@@ -145,7 +145,7 @@ import { Icon } from '../shared/ui/icon';
             <a
               routerLink="/products"
               [queryParams]="{ sort: 'newest' }"
-              class="block whitespace-nowrap rounded-lg px-3 py-1.5 text-highlight transition hover:bg-surface-2"
+              class="block whitespace-nowrap rounded-lg px-3 py-1.5 text-highlight-strong transition hover:bg-surface-2"
             >
               {{ 'home.newArrivals' | transloco }}
             </a>
