@@ -36,7 +36,9 @@ export type IconName =
   | 'gamepad'
   | 'tablet'
   | 'watch'
-  | 'tv';
+  | 'tv'
+  | 'chat'
+  | 'help';
 
 /** أيقونات SVG بسيطة (stroke) بتاخد لون النص الحالي. الحجم بالـ rem. */
 @Component({
@@ -198,6 +200,13 @@ export type IconName =
         @case ('tv') {
           <rect x="2.5" y="4" width="19" height="13" rx="2" />
           <path d="M8 21h8M12 17v4" />
+        }
+        @case ('chat') {
+          <path d="M21 11.5a8.4 8.4 0 0 1-12.4 7.4L3 20l1.2-5.4A8.5 8.5 0 1 1 21 11.5z" />
+        }
+        @case ('help') {
+          <circle cx="12" cy="12" r="10" />
+          <path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 2.5-3 4.5M12 17.5h.01" />
         }
         @case ('pin') {
           <path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0z" />

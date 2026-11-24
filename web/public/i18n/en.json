@@ -355,21 +355,20 @@
       "phone": "Phone",
       "email": "Email",
       "address": "Address",
-      "addressValue": "Cairo, Egypt",
-      "hours": "Working hours",
-      "hoursValue": "Saturday to Thursday, 10 AM to 8 PM"
+      "hours": "Working hours"
     },
     "form": {
       "title": "Send us a message",
       "name": "Your name",
       "email": "Email",
       "phone": "Phone number",
-      "subject": "Subject",
       "message": "Message",
       "optional": "optional",
       "send": "Send message",
       "sending": "Sending…",
-      "counter": "{{count}} / {{max}}"
+      "counter": "{{count}} / {{max}}",
+      "topic": "What is it about?",
+      "orderNumber": "Order number"
     },
     "validation": {
       "nameRequired": "Please enter your name.",
@@ -377,10 +376,9 @@
       "emailRequired": "Please enter your email.",
       "emailInvalid": "Enter a valid email address.",
       "phoneInvalid": "Enter a valid phone number, like +20 100 123 4567.",
-      "subjectRequired": "Please add a subject.",
-      "subjectShort": "The subject must be at least 3 characters.",
       "messageRequired": "Please write your message.",
-      "messageShort": "Please write at least 10 characters."
+      "messageShort": "Please write at least 10 characters.",
+      "orderNumberInvalid": "Use digits only, like 1042."
     },
     "success": {
       "title": "Message sent",
@@ -390,6 +388,29 @@
     "errors": {
       "invalid": "Some details are not valid. Please check the form.",
       "tooMany": "You have sent too many messages. Please try again in a few minutes."
+    },
+    "topics": {
+      "product": "A product",
+      "order": "My order",
+      "complaint": "A complaint",
+      "other": "Something else"
+    },
+    "whatsapp": {
+      "title": "Chat on WhatsApp",
+      "text": "The quickest way to reach us.",
+      "message": "Hello VoltCart, I have a question."
+    },
+    "quick": {
+      "title": "Quick answers",
+      "pay": {
+        "q": "How do I pay?",
+        "a": "Cash on delivery: you pay when your order arrives."
+      },
+      "delivery": {
+        "q": "How does delivery work?",
+        "a": "After you order, we call you to arrange the time. We deliver to every governorate."
+      },
+      "track": "Track my order"
     }
   },
   "credits": {

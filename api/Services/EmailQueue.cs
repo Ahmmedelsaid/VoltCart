@@ -3,7 +3,15 @@ using Microsoft.Extensions.Options;
 
 namespace VoltCart.Api.Services;
 
-public record EmailMessage(string To, string Subject, string Body, string? ReplyTo = null);
+/// <param name="Body">Plain text. Always sent, and shown by clients that do not render HTML.</param>
+/// <param name="Html">Optional HTML version (sent together with the text one).</param>
+public record EmailMessage(
+    string To,
+    string Subject,
+    string Body,
+    string? ReplyTo = null,
+    string? Html = null
+);
 
 /// <summary>Hands emails to the background sender so a slow or failing mail server never delays or breaks a request.</summary>
 public interface IEmailQueue

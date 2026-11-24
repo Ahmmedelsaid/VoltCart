@@ -34,6 +34,8 @@ public class ContactController(
             Phone = string.IsNullOrWhiteSpace(dto.Phone) ? null : dto.Phone.Trim(),
             Subject = dto.Subject.Trim(),
             Message = dto.Message.Trim(),
+            Topic = dto.Topic is { } t && ContactEmails.Topics.Contains(t) ? t : "other",
+            OrderNumber = dto.OrderNumber,
             CreatedAt = clock.GetUtcNow().UtcDateTime,
         };
         db.ContactMessages.Add(message);
@@ -41,30 +43,8 @@ public class ContactController(
 
         // الرسالة اتحفظت، وبعدين نبعتها على الإيميل في الخلفية (لو الإيميل متظبط)
         if (emails.Enabled && emailOptions.Value.ContactRecipient is { Length: > 0 } recipient)
-            await emails.EnqueueAsync(
-                new EmailMessage(
-                    To: recipient,
-                    Subject: $"[VoltCart] {OneLine(message.Subject)}",
-                    Body: BuildBody(message),
-                    // الرد على الإيميل يروح للعميل مباشرة
-                    ReplyTo: message.Email
-                )
-            );
+            await emails.EnqueueAsync(ContactEmails.ForShop(message, recipient));
 
         return NoContent();
     }
-
-    private static string OneLine(string text) => text.ReplaceLineEndings(" ");
-
-    private static string BuildBody(ContactMessage m) =>
-        $"""
-            New message from the Contact us form
-
-            Name:  {OneLine(m.Name)}
-            Email: {m.Email}
-            Phone: {m.Phone ?? "(not given)"}
-            Sent:  {m.CreatedAt:yyyy-MM-dd HH:mm} UTC
-
-            {m.Message}
-            """;
 }

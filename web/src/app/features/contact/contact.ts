@@ -1,6 +1,17 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  Injector,
+  afterNextRender,
+  computed,
+  inject,
+  signal,
+} from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { NonNullableFormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { TranslocoPipe } from '@jsverse/transloco';
+import { RouterLink } from '@angular/router';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { AuthService } from '../../core/auth/auth.service';
 import {
   ContactRequest,
@@ -8,42 +19,71 @@ import {
   contactErrorKey,
 } from '../../core/contact/contact.service';
 import { firstError } from '../../core/forms/form-errors';
+import { LanguageService } from '../../core/i18n/language.service';
 import { ApiError } from '../../core/models/api.models';
 import { PHONE_PATTERN } from '../../core/orders/order.models';
-import { SITE } from '../../core/site';
+import { SHOP_WHATSAPP, SITE_INFO } from '../../core/site';
 import { Icon, IconName } from '../../shared/ui/icon';
 
 const MESSAGE_MAX = 2000;
+const TOPICS = ['product', 'order', 'complaint', 'other'] as const;
+type Topic = (typeof TOPICS)[number];
 
-/** اتصل بنا: بيانات التواصل + نموذج رسالة بيتحفظ في الـ API. */
+/** المواضيع اللي بيتسأل فيها رقم الطلب (اختياري). */
+const TOPICS_WITH_ORDER: readonly Topic[] = ['order', 'complaint'];
+
+/** اتصل بنا: واتساب وبيانات التواصل، إجابات سريعة، ونموذج رسالة بيتحفظ في الـ API ويتبعت للمتجر. */
 @Component({
   selector: 'app-contact',
-  imports: [ReactiveFormsModule, TranslocoPipe, Icon],
+  imports: [ReactiveFormsModule, RouterLink, TranslocoPipe, Icon],
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
-    <div class="mx-auto grid max-w-7xl gap-8 px-4 pt-6">
+    <div class="mx-auto grid max-w-7xl gap-6 px-4 pt-6">
       <header
-        class="relative isolate overflow-hidden rounded-3xl bg-linear-to-br from-accent via-[#1d4ed8] to-[#1e3a8a] px-6 py-10 text-white shadow-lift sm:px-10 sm:py-14"
+        class="relative isolate overflow-hidden rounded-3xl bg-linear-to-br from-accent via-[#1d4ed8] to-[#1e3a8a] px-6 py-6 text-white shadow-lift sm:px-10 sm:py-8"
       >
         <div
           aria-hidden="true"
-          class="pointer-events-none absolute -end-20 -top-20 -z-10 size-80 rounded-full bg-white/10 blur-2xl"
+          class="pointer-events-none absolute -end-20 -top-24 -z-10 size-72 rounded-full bg-white/10 blur-2xl"
         ></div>
         <p
           class="inline-flex rounded-full bg-white/15 px-3 py-1 text-xs font-semibold tracking-wide"
         >
           {{ 'contact.eyebrow' | transloco }}
         </p>
-        <h1 class="mt-4 max-w-2xl text-3xl font-bold leading-tight tracking-tight sm:text-4xl">
+        <h1 class="mt-3 max-w-2xl text-2xl font-bold leading-tight tracking-tight sm:text-3xl">
           {{ 'contact.title' | transloco }}
         </h1>
-        <p class="mt-3 max-w-xl text-white/85 sm:text-lg">{{ 'contact.subtitle' | transloco }}</p>
+        <p class="mt-2 max-w-xl text-white/85">{{ 'contact.subtitle' | transloco }}</p>
       </header>
 
       <div class="grid items-start gap-6 lg:grid-cols-[minmax(0,22rem)_minmax(0,1fr)]">
-        <ul class="grid gap-3">
-          @for (item of info; track item.key) {
-            <li class="card flex items-start gap-3 p-4">
+        <div class="grid gap-3">
+          @if (whatsappUrl(); as url) {
+            <a
+              [href]="url"
+              target="_blank"
+              rel="noopener"
+              class="card group flex items-center gap-3 border-[#25d366]/40 bg-[#25d366]/10 p-4 transition duration-200 hover:-translate-y-0.5 hover:border-[#25d366] hover:shadow-lift"
+            >
+              <span
+                class="grid size-11 shrink-0 place-items-center rounded-xl bg-[#128c4a] text-white"
+              >
+                <app-icon name="chat" [size]="1.3" />
+              </span>
+              <span class="min-w-0">
+                <span class="block text-sm font-semibold">
+                  {{ 'contact.whatsapp.title' | transloco }}
+                </span>
+                <span class="block text-sm text-muted">
+                  {{ 'contact.whatsapp.text' | transloco }}
+                </span>
+              </span>
+            </a>
+          }
+
+          @for (item of info(); track item.key) {
+            <div class="card flex items-start gap-3 p-4">
               <span
                 class="grid size-11 shrink-0 place-items-center rounded-xl bg-accent-soft text-accent"
               >
@@ -60,14 +100,33 @@ const MESSAGE_MAX = 2000;
                     {{ item.value }}
                   </a>
                 } @else {
-                  <p class="text-sm text-muted">
-                    {{ 'contact.info.' + item.key + 'Value' | transloco }}
-                  </p>
+                  <p class="text-sm text-muted">{{ item.value }}</p>
                 }
               </div>
-            </li>
+            </div>
           }
-        </ul>
+
+          <section class="card p-4" aria-labelledby="quick-title">
+            <h2 id="quick-title" class="mb-3 flex items-center gap-2 text-sm font-semibold">
+              <app-icon name="help" [size]="1.1" class="text-accent" />
+              {{ 'contact.quick.title' | transloco }}
+            </h2>
+            <dl class="grid gap-3 text-sm">
+              @for (key of quickKeys; track key) {
+                <div>
+                  <dt class="font-medium">{{ 'contact.quick.' + key + '.q' | transloco }}</dt>
+                  <dd class="text-muted">{{ 'contact.quick.' + key + '.a' | transloco }}</dd>
+                </div>
+              }
+            </dl>
+            <a
+              routerLink="/orders"
+              class="mt-3 inline-flex items-center gap-1 text-sm font-semibold text-accent hover:underline"
+            >
+              {{ 'contact.quick.track' | transloco }}
+            </a>
+          </section>
+        </div>
 
         <section class="card p-5 sm:p-6" aria-labelledby="contact-form-title">
           @if (sent()) {
@@ -95,6 +154,29 @@ const MESSAGE_MAX = 2000;
                   {{ key | transloco }}
                 </p>
               }
+
+              <fieldset>
+                <legend class="mb-2 text-sm font-medium">
+                  {{ 'contact.form.topic' | transloco }}
+                </legend>
+                <div class="flex flex-wrap gap-2">
+                  @for (topic of topics; track topic) {
+                    <label
+                      class="chip cursor-pointer has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-accent"
+                      [class.chip-active]="form.controls.topic.value === topic"
+                    >
+                      <input
+                        type="radio"
+                        class="sr-only"
+                        formControlName="topic"
+                        name="topic"
+                        [value]="topic"
+                      />
+                      {{ 'contact.topics.' + topic | transloco }}
+                    </label>
+                  }
+                </div>
+              </fieldset>
 
               <div class="grid gap-4 sm:grid-cols-2">
                 <div>
@@ -167,23 +249,31 @@ const MESSAGE_MAX = 2000;
                   }
                 </div>
 
-                <div>
-                  <label for="ct-subject" class="mb-1.5 block text-sm font-medium">
-                    {{ 'contact.form.subject' | transloco }}
-                  </label>
-                  <input
-                    id="ct-subject"
-                    formControlName="subject"
-                    class="field"
-                    [attr.aria-invalid]="subjectError() ? 'true' : null"
-                    [attr.aria-describedby]="subjectError() ? 'ct-subject-error' : null"
-                  />
-                  @if (subjectError(); as key) {
-                    <p id="ct-subject-error" class="mt-1.5 text-sm text-danger">
-                      {{ key | transloco }}
-                    </p>
-                  }
-                </div>
+                @if (askOrderNumber()) {
+                  <div>
+                    <label for="ct-order" class="mb-1.5 block text-sm font-medium">
+                      {{ 'contact.form.orderNumber' | transloco }}
+                      <span class="font-normal text-muted"
+                        >({{ 'contact.form.optional' | transloco }})</span
+                      >
+                    </label>
+                    <input
+                      id="ct-order"
+                      formControlName="orderNumber"
+                      inputmode="numeric"
+                      dir="ltr"
+                      class="field"
+                      placeholder="1042"
+                      [attr.aria-invalid]="orderError() ? 'true' : null"
+                      [attr.aria-describedby]="orderError() ? 'ct-order-error' : null"
+                    />
+                    @if (orderError(); as key) {
+                      <p id="ct-order-error" class="mt-1.5 text-sm text-danger">
+                        {{ key | transloco }}
+                      </p>
+                    }
+                  </div>
+                }
               </div>
 
               <div>
@@ -237,21 +327,56 @@ const MESSAGE_MAX = 2000;
 export class Contact {
   private readonly auth = inject(AuthService);
   private readonly contact = inject(ContactService);
+  private readonly language = inject(LanguageService);
+  private readonly transloco = inject(TranslocoService);
+  private readonly injector = inject(Injector);
+  private readonly host = inject<ElementRef<HTMLElement>>(ElementRef);
+  private readonly site = inject(SITE_INFO);
+  private readonly whatsapp = inject(SHOP_WHATSAPP);
 
   protected readonly messageMax = MESSAGE_MAX;
-  protected readonly info: { key: string; icon: IconName; value?: string; href?: string }[] = [
-    {
-      key: 'phone',
-      icon: 'phone',
-      value: SITE.phone,
-      href: `tel:${SITE.phone.replace(/\s/g, '')}`,
-    },
-    { key: 'email', icon: 'mail', value: SITE.email, href: `mailto:${SITE.email}` },
-    { key: 'address', icon: 'pin' },
-    { key: 'hours', icon: 'clock' },
-  ];
+  protected readonly topics = TOPICS;
+  protected readonly quickKeys = ['pay', 'delivery'];
+
+  /** كروت بيانات التواصل: بتظهر بس اللي اتملا في site.ts. */
+  protected readonly info = computed(() => {
+    const lang = this.language.lang();
+    const items: { key: string; icon: IconName; value: string; href?: string }[] = [];
+    if (this.site.phone) {
+      items.push({
+        key: 'phone',
+        icon: 'phone',
+        value: this.site.phone,
+        href: `tel:${this.site.phone.replace(/\s/g, '')}`,
+      });
+    }
+    if (this.site.email) {
+      items.push({
+        key: 'email',
+        icon: 'mail',
+        value: this.site.email,
+        href: `mailto:${this.site.email}`,
+      });
+    }
+    if (this.site.address[lang]) {
+      items.push({ key: 'address', icon: 'pin', value: this.site.address[lang] });
+    }
+    if (this.site.hours[lang]) {
+      items.push({ key: 'hours', icon: 'clock', value: this.site.hours[lang] });
+    }
+    return items;
+  });
+
+  /** رابط واتساب المتجر مع رسالة افتتاحية، أو null لو الرقم مش متظبط. */
+  protected readonly whatsappUrl = computed(() => {
+    if (!this.whatsapp) return null;
+    this.language.lang(); // الرسالة بلغة الصفحة
+    const text = this.transloco.translate('contact.whatsapp.message');
+    return `https://wa.me/${this.whatsapp}?text=${encodeURIComponent(text)}`;
+  });
 
   protected readonly form = inject(NonNullableFormBuilder).group({
+    topic: ['product' as Topic],
     name: [
       this.auth.user()?.fullName ?? '',
       [Validators.required, Validators.minLength(2), Validators.maxLength(100)],
@@ -261,13 +386,19 @@ export class Contact {
       [Validators.required, Validators.email, Validators.maxLength(254)],
     ],
     phone: ['', [Validators.pattern(PHONE_PATTERN)]],
-    subject: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(150)]],
+    orderNumber: ['', [Validators.pattern(/^\d{1,8}$/)]],
     message: [
       '',
       [Validators.required, Validators.minLength(10), Validators.maxLength(MESSAGE_MAX)],
     ],
     website: [''],
   });
+
+  private readonly topic = toSignal(this.form.controls.topic.valueChanges, {
+    initialValue: this.form.controls.topic.value,
+  });
+  /** رقم الطلب بيظهر بس لما الموضوع يخص طلب. */
+  protected readonly askOrderNumber = computed(() => TOPICS_WITH_ORDER.includes(this.topic()));
 
   protected readonly submitting = signal(false);
   protected readonly sent = signal(false);
@@ -301,14 +432,11 @@ export class Contact {
     );
   }
 
-  protected subjectError(): string | null {
-    const c = this.form.controls.subject;
+  protected orderError(): string | null {
+    const c = this.form.controls.orderNumber;
     return firstError(
       c,
-      {
-        required: 'contact.validation.subjectRequired',
-        minlength: 'contact.validation.subjectShort',
-      },
+      { pattern: 'contact.validation.orderNumberInvalid' },
       c.touched || this.submitted(),
     );
   }
@@ -327,14 +455,31 @@ export class Contact {
 
   protected submit(): void {
     this.submitted.set(true);
+
+    // رقم الطلب المخفي ما يمنعش الإرسال حتى لو فيه قيمة قديمة غلط
+    if (!this.askOrderNumber()) this.form.controls.orderNumber.reset('');
+
     if (this.form.invalid) {
       this.form.markAllAsTouched();
+      this.focusFirstInvalid();
       return;
     }
     if (this.submitting()) return;
 
     const value = this.form.getRawValue();
-    const request: ContactRequest = { ...value, phone: value.phone.trim() || null };
+    const message = value.message.trim();
+    const orderNumber = value.orderNumber.trim();
+    const request: ContactRequest = {
+      name: value.name,
+      email: value.email,
+      phone: value.phone.trim() || null,
+      // مفيش خانة موضوع: العنوان بيتاخد من أول الرسالة
+      subject: message.replace(/\s+/g, ' ').slice(0, 60),
+      message,
+      topic: value.topic,
+      orderNumber: orderNumber ? Number(orderNumber) : null,
+      website: value.website,
+    };
 
     this.submitting.set(true);
     this.serverError.set(null);
@@ -351,10 +496,18 @@ export class Contact {
   }
 
   protected again(): void {
-    this.form.controls.subject.reset('');
     this.form.controls.message.reset('');
+    this.form.controls.orderNumber.reset('');
     this.submitted.set(false);
     this.serverError.set(null);
     this.sent.set(false);
+  }
+
+  /** بعد ما رسايل الأخطاء تتعرض، نحط المؤشر على أول حقل غلط (مهم على الموبايل). */
+  private focusFirstInvalid(): void {
+    afterNextRender(
+      () => this.host.nativeElement.querySelector<HTMLElement>('[aria-invalid="true"]')?.focus(),
+      { injector: this.injector },
+    );
   }
 }
