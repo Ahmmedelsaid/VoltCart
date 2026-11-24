@@ -23,6 +23,10 @@ public class Order
     public required string City { get; set; }
     public string? Notes { get; set; }
 
+    /// <summary>Optional pin the customer dropped on the map. Both are set or both are null.</summary>
+    public double? Latitude { get; set; }
+    public double? Longitude { get; set; }
+
     public decimal Total { get; set; }
 
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;

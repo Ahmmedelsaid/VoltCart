@@ -21,6 +21,8 @@ export interface Order {
   address: string;
   city: string;
   notes: string | null;
+  latitude: number | null;
+  longitude: number | null;
   items: OrderItem[];
 }
 
@@ -40,6 +42,9 @@ export interface PlaceOrderRequest {
   address: string;
   city: string;
   notes: string | null;
+  /** مكان الدبوس على الخريطة (اختياري): الاتنين مع بعض أو الاتنين null. */
+  latitude: number | null;
+  longitude: number | null;
 }
 
 /** نفس شكل رقم التليفون المقبول في الـ API. */

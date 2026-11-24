@@ -186,9 +186,29 @@
       "name": "Full name",
       "phone": "Phone number",
       "address": "Address",
-      "city": "City",
+      "city": "Governorate",
+      "cityPlaceholder": "Choose your governorate",
       "notes": "Notes for the courier"
     },
+    "sections": {
+      "contact": "Who is receiving the order?",
+      "delivery": "Where should we deliver?",
+      "payment": "Payment"
+    },
+    "map": {
+      "label": "Map: tap to drop a pin on your delivery location",
+      "loading": "Loading map…",
+      "locate": "Use my location",
+      "locating": "Locating…",
+      "hint": "Tap the map to drop a pin on your exact location (optional).",
+      "pinned": "Pin saved. Drag it to adjust.",
+      "clear": "Remove pin",
+      "denied": "Location access is blocked. Tap the map instead.",
+      "unavailable": "We could not get your location. Tap the map instead."
+    },
+    "addressLooking": "Looking up the address…",
+    "addressFailed": "We could not read the address from the pin. Please type it in.",
+    "addressFromMap": "Filled in from your pin. Please check it and add the building and floor.",
     "optional": "optional",
     "payment": "Payment",
     "cod": "Cash on delivery: you pay when the order arrives.",
@@ -203,8 +223,7 @@
       "phoneInvalid": "Enter a valid phone number, like +20 100 123 4567.",
       "addressRequired": "Please enter your address.",
       "addressShort": "The address looks too short.",
-      "cityRequired": "Please enter your city.",
-      "cityShort": "The city name looks too short."
+      "cityRequired": "Please choose your governorate."
     },
     "errors": {
       "invalid": "Some details are not valid. Please check the form.",
@@ -213,6 +232,7 @@
   },
   "orders": {
     "title": "My orders",
+    "viewOnMap": "View delivery pin on the map",
     "number": "Order #{{id}}",
     "all": "All orders",
     "total": "Total",

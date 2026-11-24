@@ -17,6 +17,8 @@ const request: PlaceOrderRequest = {
   address: '12 Nile St',
   city: 'Giza',
   notes: null,
+  latitude: null,
+  longitude: null,
 };
 
 const order: Order = {

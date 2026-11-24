@@ -76,6 +76,13 @@ public class OrdersController(AppDbContext db, TimeProvider clock) : ControllerB
         if (UserId is not { } userId)
             return Unauthorized();
 
+        // الدبوس إما إحداثيتين مع بعض أو مفيش
+        if (dto.Latitude.HasValue != dto.Longitude.HasValue)
+            return Problem(
+                detail: "Send both latitude and longitude, or neither.",
+                statusCode: StatusCodes.Status400BadRequest
+            );
+
         var cart = await db
             .CartItems.Include(c => c.Product)
             .Where(c => c.UserId == userId)
@@ -128,6 +135,8 @@ public class OrdersController(AppDbContext db, TimeProvider clock) : ControllerB
             Phone = dto.Phone.Trim(),
             Address = dto.Address.Trim(),
             City = dto.City.Trim(),
+            Latitude = dto.Latitude,
+            Longitude = dto.Longitude,
             Notes = string.IsNullOrWhiteSpace(dto.Notes) ? null : dto.Notes.Trim(),
             CreatedAt = now,
             // السعر بيتاخد من الـ database دلوقتي، مش من اللي العميل شافه في السلة

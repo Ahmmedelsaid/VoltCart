@@ -1,4 +1,5 @@
 @import 'tailwindcss';
+@import 'leaflet/dist/leaflet.css';
 @import '@fontsource/ibm-plex-sans-arabic/400.css';
 @import '@fontsource/ibm-plex-sans-arabic/500.css';
 @import '@fontsource/ibm-plex-sans-arabic/600.css';
@@ -82,6 +83,54 @@
 
   .field {
     @apply w-full rounded-lg border border-border bg-surface px-3 py-2 text-sm text-fg placeholder:text-muted;
+  }
+
+  /* رقم الخطوة في صفحة إتمام الطلب */
+  .step {
+    @apply grid size-7 shrink-0 place-items-center rounded-full bg-accent text-sm font-bold text-accent-fg;
+  }
+}
+
+/* الخريطة (Leaflet): بلاط OpenStreetMap فاتح، فبنقلبه عشان يليق على الثيم الداكن */
+@layer components {
+  .leaflet-container {
+    font-family: var(--font-sans);
+    background: var(--color-surface-2);
+    outline-offset: 0;
+  }
+
+  .leaflet-tile-pane {
+    filter: invert(1) hue-rotate(180deg) brightness(0.95) contrast(0.9) saturate(0.75);
+  }
+
+  .leaflet-bar a,
+  .leaflet-bar a:hover {
+    background-color: var(--color-surface);
+    border-color: var(--color-border);
+    color: var(--color-fg);
+  }
+
+  .leaflet-bar a:hover {
+    background-color: var(--color-surface-2);
+  }
+
+  .leaflet-bar a.leaflet-disabled {
+    color: var(--color-muted);
+    background-color: var(--color-surface);
+  }
+
+  .leaflet-control-attribution {
+    background: rgb(11 13 18 / 0.75) !important;
+    color: var(--color-muted);
+  }
+
+  .leaflet-control-attribution a {
+    color: var(--color-fg);
+  }
+
+  .pin-marker {
+    background: none;
+    border: 0;
   }
 }
 

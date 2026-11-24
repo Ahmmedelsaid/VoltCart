@@ -169,6 +169,12 @@ namespace VoltCart.Api.Migrations
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("datetime(6)");
 
+                    b.Property<double?>("Latitude")
+                        .HasColumnType("double");
+
+                    b.Property<double?>("Longitude")
+                        .HasColumnType("double");
+
                     b.Property<string>("Notes")
                         .HasMaxLength(500)
                         .HasColumnType("varchar(500)");
