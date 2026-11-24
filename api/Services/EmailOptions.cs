@@ -14,6 +14,9 @@ public class EmailOptions
     /// <summary>STARTTLS on the connection (Gmail, Outlook, most providers). Turn off only for a local test server.</summary>
     public bool UseStartTls { get; set; } = true;
 
+    /// <summary>Writes the SMTP conversation to the console (passwords are redacted). For troubleshooting only.</summary>
+    public bool LogProtocol { get; set; }
+
     public string? UserName { get; set; }
     public string? Password { get; set; }
 

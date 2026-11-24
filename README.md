@@ -29,3 +29,6 @@ There is no automatic WhatsApp message (that needs a WhatsApp Business API accou
 
 Gmail needs 2-step verification and an **App password** (Google Account > Security > App passwords); your normal
 password will not work. In production use environment variables (`Email__UserName`, `Email__Password`, ...).
+
+Troubleshooting: the API console shows `Email sent: ...` on success. `SMTP login was refused` means the password is not an App
+password. To see the whole SMTP conversation (passwords are hidden) start the API with `Email__LogProtocol=true`.
