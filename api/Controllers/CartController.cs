@@ -158,7 +158,7 @@ public class CartController(AppDbContext db, TimeProvider clock) : ControllerBas
             .ToListAsync();
 
         // بنحسب إجمالي السطر هنا مش في SQL، عشان الـ decimal ما يطلعش بكسور زيادة
-        items = items.Select(i => i with { LineTotal = i.UnitPrice * i.Quantity }).ToList();
+        items = [.. items.Select(i => i with { LineTotal = i.UnitPrice * i.Quantity })];
 
         var subtotal = items.Where(i => i.IsAvailable).Sum(i => i.LineTotal);
         return new CartDto(items, items.Sum(i => i.Quantity), subtotal);

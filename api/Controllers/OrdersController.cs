@@ -131,15 +131,17 @@ public class OrdersController(AppDbContext db, TimeProvider clock) : ControllerB
             Notes = string.IsNullOrWhiteSpace(dto.Notes) ? null : dto.Notes.Trim(),
             CreatedAt = now,
             // السعر بيتاخد من الـ database دلوقتي، مش من اللي العميل شافه في السلة
-            Items = cart.Select(c => new OrderItem
+            Items =
+            [
+                .. cart.Select(c => new OrderItem
                 {
                     ProductId = c.ProductId,
                     ProductName = c.Product!.Name,
                     ImageUrl = c.Product.ImageUrl,
                     UnitPrice = c.Product.Price,
                     Quantity = c.Quantity,
-                })
-                .ToList(),
+                }),
+            ],
         };
         order.Total = order.Items.Sum(i => i.UnitPrice * i.Quantity);
 

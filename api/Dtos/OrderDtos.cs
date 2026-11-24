@@ -52,16 +52,16 @@ public record OrderDto(
             order.Address,
             order.City,
             order.Notes,
-            order
-                .Items.Select(i => new OrderItemDto(
+            [
+                .. order.Items.Select(i => new OrderItemDto(
                     i.ProductId,
                     i.ProductName,
                     i.ImageUrl,
                     i.UnitPrice,
                     i.Quantity,
                     i.UnitPrice * i.Quantity
-                ))
-                .ToList()
+                )),
+            ]
         );
 }
 
