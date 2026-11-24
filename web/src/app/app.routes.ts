@@ -19,6 +19,14 @@ export const routes: Routes = [
       import('./features/products/product-detail/product-detail').then((m) => m.ProductDetail),
   },
   {
+    path: 'about',
+    loadComponent: () => import('./features/about/about').then((m) => m.About),
+  },
+  {
+    path: 'contact',
+    loadComponent: () => import('./features/contact/contact').then((m) => m.Contact),
+  },
+  {
     path: 'credits',
     loadComponent: () => import('./features/credits/credits').then((m) => m.Credits),
   },

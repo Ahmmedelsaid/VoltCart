@@ -29,7 +29,7 @@ import { Toasts } from './shared/ui/toasts';
 
     <footer class="mt-16 bg-ink text-white/70">
       <div
-        class="mx-auto grid max-w-7xl grid-cols-2 gap-x-8 gap-y-10 px-4 py-12 lg:grid-cols-[1.6fr_1fr_1fr_1fr]"
+        class="mx-auto grid max-w-7xl grid-cols-2 gap-x-8 gap-y-10 px-4 py-12 lg:grid-cols-[1.6fr_1fr_1fr_1fr_1fr]"
       >
         <div class="col-span-2 max-w-xs lg:col-span-1">
           <a
@@ -93,6 +93,24 @@ import { Toasts } from './shared/ui/toasts';
                   </a>
                 </li>
               }
+            </ul>
+          </nav>
+
+          <nav [attr.aria-label]="'footer.company' | transloco">
+            <h2 class="mb-4 text-sm font-semibold text-white">
+              {{ 'footer.company' | transloco }}
+            </h2>
+            <ul class="space-y-2.5 text-sm">
+              <li>
+                <a routerLink="/about" class="transition hover:text-white">
+                  {{ 'footer.about' | transloco }}
+                </a>
+              </li>
+              <li>
+                <a routerLink="/contact" class="transition hover:text-white">
+                  {{ 'footer.contact' | transloco }}
+                </a>
+              </li>
             </ul>
           </nav>
 

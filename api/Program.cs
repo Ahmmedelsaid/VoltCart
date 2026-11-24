@@ -78,6 +78,18 @@ builder.Services.AddRateLimiter(options =>
             }
         )
     );
+    // رسايل "اتصل بنا": محدودة لكل IP عشان ما تتحولش لسبام
+    options.AddPolicy("contact", httpContext =>
+        RateLimitPartition.GetFixedWindowLimiter(
+            httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",
+            _ => new FixedWindowRateLimiterOptions
+            {
+                PermitLimit = 5,
+                Window = TimeSpan.FromMinutes(10),
+                QueueLimit = 0,
+            }
+        )
+    );
     options.AddPolicy("auth", httpContext =>
         RateLimitPartition.GetFixedWindowLimiter(
             httpContext.Connection.RemoteIpAddress?.ToString() ?? "unknown",
@@ -101,6 +113,14 @@ builder
     .ValidateOnStart();
 
 builder.Services.AddSingleton(TimeProvider.System);
+
+// الإيميل: طابور + خدمة خلفية بتبعت بـ SMTP. من غير إعدادات (Email:Host) بيفضل مقفول.
+builder.Services.Configure<EmailOptions>(
+    builder.Configuration.GetSection(EmailOptions.SectionName)
+);
+builder.Services.AddSingleton<EmailQueue>();
+builder.Services.AddSingleton<IEmailQueue>(sp => sp.GetRequiredService<EmailQueue>());
+builder.Services.AddHostedService<EmailSenderService>();
 builder.Services.AddSingleton<IPasswordHasher<User>, PasswordHasher<User>>();
 builder.Services.AddSingleton<TokenService>();
 
