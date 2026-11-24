@@ -5,6 +5,10 @@
 A full-stack electronics store for Egypt: **Angular 21** single-page app, **.NET 10** Web API and **MySQL**.
 Arabic and English (with proper RTL), cash on delivery, and a map pin at checkout so the courier finds you.
 
+**Live demo: [voltcart-production.up.railway.app](https://voltcart-production.up.railway.app)**
+(register a test account, add something to the cart and place an order; the data is demo data.
+The contact form saves messages, but email notifications are off on the demo because the host blocks outgoing SMTP.)
+
 ![Home](docs/screenshots/home.jpg)
 
 |                                         |                                         |
