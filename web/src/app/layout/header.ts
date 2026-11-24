@@ -172,7 +172,8 @@ export class Header {
   protected readonly categories = computed(() =>
     this.allCategories()
       .filter((category) => category.parentId !== null)
-      .slice(0, 8),
+      .sort((a, b) => b.productCount - a.productCount)
+      .slice(0, 10),
   );
 
   protected search(event: Event, term: string): void {

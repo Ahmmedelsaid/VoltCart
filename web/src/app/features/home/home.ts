@@ -16,6 +16,11 @@ interface CategorySection {
   items: ProductListItem[];
 }
 
+/** الأقسام الأكبر الأول (أكتر منتجات)، عشان الصفحة الرئيسية تبدأ بالأهم. */
+function byPopularity(categories: Category[]): Category[] {
+  return [...categories].sort((a, b) => b.productCount - a.productCount);
+}
+
 /** أيقونة لكل قسم بناءً على الـ slug، وأيقونة صندوق لأي قسم جديد. */
 function iconFor(category: Category): IconName {
   const slug = category.slug.toLowerCase();
@@ -25,6 +30,11 @@ function iconFor(category: Category): IconName {
     return 'headphones';
   }
   if (slug.includes('accessor')) return 'plug';
+  if (slug.includes('camera')) return 'camera';
+  if (slug.includes('gaming') || slug.includes('game')) return 'gamepad';
+  if (slug.includes('tablet')) return 'tablet';
+  if (slug.includes('wearable') || slug.includes('watch')) return 'watch';
+  if (slug.includes('tv') || slug.includes('display') || slug.includes('monitor')) return 'tv';
   return 'box';
 }
 
@@ -271,7 +281,7 @@ export class Home {
   );
 
   protected readonly subCategories = computed(() =>
-    this.categories().filter((category) => category.parentId !== null),
+    byPopularity(this.categories().filter((category) => category.parentId !== null)),
   );
 
   /** أول 4 منتجات وصلت حديثاً بصورها في البانر. */
@@ -286,9 +296,9 @@ export class Home {
   protected readonly sections = toSignal(
     this.catalog.categories$.pipe(
       map((categories) =>
-        categories
-          .filter((category) => category.parentId !== null && category.productCount > 0)
-          .slice(0, 3),
+        byPopularity(
+          categories.filter((category) => category.parentId !== null && category.productCount > 0),
+        ).slice(0, 3),
       ),
       switchMap((categories) =>
         categories.length === 0

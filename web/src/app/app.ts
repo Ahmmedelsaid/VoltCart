@@ -148,6 +148,7 @@ export class App {
   protected readonly categories = computed(() =>
     this.allCategories()
       .filter((category) => category.parentId !== null)
+      .sort((a, b) => b.productCount - a.productCount)
       .slice(0, 5),
   );
 }

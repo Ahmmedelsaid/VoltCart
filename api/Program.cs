@@ -2,7 +2,6 @@ using System.Text;
 using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -140,7 +139,9 @@ if (app.Environment.IsDevelopment())
 
     using var scope = app.Services.CreateScope();
     var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    await DbSeeder.SeedAsync(db);
+    var seeded = await DbSeeder.SeedAsync(db);
+    if (seeded > 0)
+        app.Logger.LogInformation("Seeded {Count} demo products", seeded);
 }
 
 // أول Admin بيتعمل من الإعدادات (Seed:AdminEmail / Seed:AdminPassword) لو موجودة بس
