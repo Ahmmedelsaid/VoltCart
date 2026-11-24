@@ -131,6 +131,10 @@ import { Toasts } from './shared/ui/toasts';
 
       <div class="border-t border-white/10 py-5 text-center text-xs text-white/60">
         {{ 'footer.rights' | transloco: { year: year } }}
+        ·
+        <a routerLink="/credits" class="underline transition hover:text-white">
+          {{ 'footer.credits' | transloco }}
+        </a>
       </div>
     </footer>
   `,

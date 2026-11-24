@@ -44,7 +44,8 @@
     "shop": "Shop",
     "allProducts": "All products",
     "categories": "Categories",
-    "account": "Account"
+    "account": "Account",
+    "credits": "Photo credits"
   },
   "auth": {
     "login": {
@@ -282,5 +283,10 @@
     "promo": "Cash on delivery across Egypt",
     "allProducts": "All products",
     "searchLabel": "Search products"
+  },
+  "credits": {
+    "title": "Photo credits",
+    "intro": "Some product photos come from Wikimedia Commons and are used under free licences. Thank you to the photographers. Other product images on this site are simple illustrations.",
+    "empty": "No third-party photos are used yet."
   }
 }
