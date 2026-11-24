@@ -285,6 +285,10 @@
     "errors": {
       "notFound": "This order does not exist.",
       "cannotCancel": "This order can no longer be cancelled."
+    },
+    "whatsapp": {
+      "button": "Send my order on WhatsApp",
+      "message": "Hello VoltCart, I placed order #{{id}} (total EGP {{total}}). Name: {{name}}, phone: {{phone}}."
     }
   },
   "header": {

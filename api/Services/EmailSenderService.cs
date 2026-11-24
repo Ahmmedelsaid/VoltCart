@@ -26,6 +26,14 @@ public sealed class EmailSenderService(
             {
                 await SendAsync(message, stoppingToken);
             }
+            catch (AuthenticationException ex)
+            {
+                logger.LogError(
+                    ex,
+                    "SMTP login was refused, so the email {Subject} was not sent. For Gmail, Email:Password must be an App password (needs 2-Step Verification), not the account password: https://support.google.com/accounts/answer/185833",
+                    message.Subject
+                );
+            }
             catch (Exception ex) when (ex is not OperationCanceledException)
             {
                 // الرسالة محفوظة في الـ database أصلاً، فالفشل هنا مش بيضيّع حاجة
@@ -37,6 +45,12 @@ public sealed class EmailSenderService(
             }
         }
     }
+
+    /// <summary>Port 465 is SMTP over SSL from the first byte (Gmail's other port); 587 upgrades with STARTTLS.</summary>
+    private static SecureSocketOptions SocketOptionsFor(EmailOptions settings) =>
+        settings.Port == 465 ? SecureSocketOptions.SslOnConnect
+        : settings.UseStartTls ? SecureSocketOptions.StartTls
+        : SecureSocketOptions.None;
 
     private async Task SendAsync(EmailMessage message, CancellationToken cancellationToken)
     {
@@ -50,15 +64,29 @@ public sealed class EmailSenderService(
         mime.Subject = message.Subject;
         mime.Body = new TextPart("plain") { Text = message.Body };
 
-        using var client = new SmtpClient { Timeout = 20_000 };
+        using var client = settings.LogProtocol
+            ? new SmtpClient(new ProtocolLogger(Console.OpenStandardError())) { Timeout = 20_000 }
+            : new SmtpClient { Timeout = 20_000 };
         await client.ConnectAsync(
             settings.Host!,
             settings.Port,
-            settings.UseStartTls ? SecureSocketOptions.StartTls : SecureSocketOptions.None,
+            SocketOptionsFor(settings),
             cancellationToken
         );
+        // MailKit بيجرّب كل الطرق بالترتيب، وGmail بيقفل الاتصال بعد أول رفض، فالخطأ الحقيقي بيضيع.
+        // PLAIN وحدها كفاية، وبكده رسالة الرفض الأصلية هي اللي بتظهر.
+        if (client.AuthenticationMechanisms.Contains("PLAIN"))
+            foreach (
+                var mechanism in client.AuthenticationMechanisms.Where(m => m != "PLAIN").ToList()
+            )
+                client.AuthenticationMechanisms.Remove(mechanism);
+
         if (!string.IsNullOrEmpty(settings.UserName))
-            await client.AuthenticateAsync(settings.UserName, settings.Password ?? "", cancellationToken);
+            await client.AuthenticateAsync(
+                settings.UserName,
+                settings.Password ?? "",
+                cancellationToken
+            );
 
         await client.SendAsync(mime, cancellationToken);
         await client.DisconnectAsync(true, cancellationToken);

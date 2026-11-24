@@ -1,10 +1,11 @@
 import { ChangeDetectionStrategy, Component, computed, inject, input, signal } from '@angular/core';
 import { toObservable, toSignal } from '@angular/core/rxjs-interop';
 import { RouterLink } from '@angular/router';
-import { TranslocoPipe } from '@jsverse/transloco';
+import { TranslocoPipe, TranslocoService } from '@jsverse/transloco';
 import { of, switchMap } from 'rxjs';
 import { ApiError } from '../../core/models/api.models';
 import { Order } from '../../core/orders/order.models';
+import { SHOP_WHATSAPP } from '../../core/site';
 import { OrdersService, orderErrorKey } from '../../core/orders/orders.service';
 import { LoadState, toLoadState } from '../../core/state/load-state';
 import { DateTimePipe } from '../../shared/pipes/date-time.pipe';
@@ -123,6 +124,17 @@ import { OrderStatusBadge } from '../../shared/ui/order-status';
               </p>
             </section>
 
+            @if (order.status === 'Placed' && whatsappNumber) {
+              <a
+                [href]="whatsappUrl(order)"
+                target="_blank"
+                rel="noopener"
+                class="btn btn-accent w-full py-3"
+              >
+                {{ 'orders.whatsapp.button' | transloco }}
+              </a>
+            }
+
             @if (order.status === 'Placed') {
               @if (confirming()) {
                 <div class="grid gap-2 rounded-2xl border border-danger/40 bg-danger/5 p-4">
@@ -183,6 +195,10 @@ export class OrderDetail {
   readonly placed = input<string>();
 
   private readonly orders = inject(OrdersService);
+  private readonly transloco = inject(TranslocoService);
+
+  /** رقم واتساب المتجر (من site.ts). فاضي = الزرار مخفي. */
+  protected readonly whatsappNumber = inject(SHOP_WHATSAPP);
 
   /** الطلب بعد الإلغاء (الرد الجديد من الـ API بيحل محل النسخة المحمّلة). */
   protected readonly shown = signal<Order | null>(null);
@@ -211,6 +227,17 @@ export class OrderDetail {
     const current = this.state();
     return current.status === 'error' ? orderErrorKey(current.error) : '';
   });
+
+  /** رابط wa.me بيفتح الشات مع المتجر ورسالة جاهزة فيها بيانات الطلب (العميل هو اللي بيضغط إرسال). */
+  protected whatsappUrl(order: Order): string {
+    const text = this.transloco.translate('orders.whatsapp.message', {
+      id: order.id,
+      total: order.total.toLocaleString('en-US'),
+      name: order.shippingName,
+      phone: order.phone,
+    });
+    return `https://wa.me/${this.whatsappNumber}?text=${encodeURIComponent(text)}`;
+  }
 
   protected mapUrl(lat: number, lng: number): string {
     return `https://www.openstreetmap.org/?mlat=${lat}&mlon=${lng}#map=17/${lat}/${lng}`;

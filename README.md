@@ -19,5 +19,16 @@ dotnet user-secrets set "Email:Password" "<gmail app password>" --project api
 dotnet user-secrets set "Email:ContactRecipient" "where-to-receive@example.com" --project api
 ```
 
+The same setup also emails every new order: a confirmation to the customer (Arabic and English, with a link to the order page)
+and an alert to the shop. The alert goes to `Email:OrderRecipient`, or to `Email:ContactRecipient` when that is not set.
+Set `Email:WebUrl` to the public address of the website so the links in the emails are right.
+
+There is no automatic WhatsApp message (that needs a WhatsApp Business API account). Instead the order page has a
+"Send my order on WhatsApp" button that opens a chat with the shop; set the shop number in `web/src/app/core/site.ts`
+(`whatsapp`, digits only with the country code, for example `201012345678`). Empty means the button is hidden.
+
 Gmail needs 2-step verification and an **App password** (Google Account > Security > App passwords); your normal
 password will not work. In production use environment variables (`Email__UserName`, `Email__Password`, ...).
+
+Troubleshooting: the API console shows `Email sent: ...` on success. `SMTP login was refused` means the password is not an App
+password. To see the whole SMTP conversation (passwords are hidden) start the API with `Email__LogProtocol=true`.

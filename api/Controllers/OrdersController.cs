@@ -1,9 +1,11 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using VoltCart.Api.Data;
 using VoltCart.Api.Dtos;
 using VoltCart.Api.Models;
+using VoltCart.Api.Services;
 
 namespace VoltCart.Api.Controllers;
 
@@ -11,7 +13,13 @@ namespace VoltCart.Api.Controllers;
 [ApiController]
 [Authorize]
 [Route("api/[controller]")]
-public class OrdersController(AppDbContext db, TimeProvider clock) : ControllerBase
+public class OrdersController(
+    AppDbContext db,
+    TimeProvider clock,
+    IEmailQueue emails,
+    IOptions<EmailOptions> emailOptions,
+    ILogger<OrdersController> logger
+) : ControllerBase
 {
     private const int ThumbnailsPerOrder = 3;
 
@@ -159,7 +167,42 @@ public class OrdersController(AppDbContext db, TimeProvider clock) : ControllerB
         await db.SaveChangesAsync();
         await transaction.CommitAsync();
 
+        await NotifyAsync(order);
+
         return CreatedAtAction(nameof(Get), new { id = order.Id }, OrderDto.From(order));
+    }
+
+    /// <summary>
+    /// Emails a confirmation to the customer and an alert to the shop. The order is already saved, so a problem
+    /// here is only logged: it must never turn a successful order into an error.
+    /// </summary>
+    private async Task NotifyAsync(Order order)
+    {
+        if (!emails.Enabled)
+            return;
+
+        try
+        {
+            var settings = emailOptions.Value;
+            var customer = await db
+                .Users.AsNoTracking()
+                .Where(u => u.Id == order.UserId)
+                .Select(u => new { u.Email, u.FullName })
+                .FirstOrDefaultAsync();
+            if (customer is null)
+                return;
+
+            await emails.EnqueueAsync(
+                OrderEmails.ForCustomer(order, customer.Email, customer.FullName, settings.WebUrl)
+            );
+
+            if (settings.ShopRecipient is { Length: > 0 } shop)
+                await emails.EnqueueAsync(OrderEmails.ForShop(order, shop, customer.Email));
+        }
+        catch (Exception ex)
+        {
+            logger.LogWarning(ex, "Could not queue the emails for order {OrderId}", order.Id);
+        }
     }
 
     /// <summary>Cancels an order that has not been handled yet and puts its items back in stock.</summary>
