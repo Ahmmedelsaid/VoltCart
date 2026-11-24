@@ -60,6 +60,13 @@ internal static class SeedCatalog
                 : image.Contains('.') ? $"/images/products/{image}"
                 : $"/images/products/generated/{image}.svg";
 
+            // صورة حقيقية (SeedPhotos) أحسن من الرسمة، بس ما تغطيش صورة محددة بالاسم في الجدول
+            if (
+                (imageUrl is null || imageUrl.Contains("/generated/"))
+                && SeedPhotos.Files.TryGetValue(slug, out var photo)
+            )
+                imageUrl = $"/images/products/real/{photo}";
+
             var sku = c[6].Length > 0 ? c[6] : slug.ToUpperInvariant();
             if (sku.Length > 50)
                 sku = sku[..50].TrimEnd('-');
